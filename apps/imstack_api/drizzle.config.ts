@@ -1,6 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 
-const DB_URL = process.env.DATABASE_URL as string;
+const DB_URL = process.env.POSTGRES_URL;
 
 export default defineConfig({
   dialect: "postgresql",
@@ -11,6 +11,6 @@ export default defineConfig({
   },
   out: "./src/database",
   dbCredentials: {
-    url: DB_URL,
+    url: DB_URL ?? "",
   },
 });

@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import type { AnyPgColumn, PgCustomColumnBuilder } from "drizzle-orm/pg-core";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import {
   customType,
   integer,

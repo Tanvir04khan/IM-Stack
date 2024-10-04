@@ -1,12 +1,12 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as pg from "pg";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import * as schema from "./schema";
 
-dotenv.config();
+config();
 
 export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.POSTGRES_URL,
 });
 
 const getConnection = (): Promise<pg.PoolClient> => {
@@ -16,7 +16,9 @@ const getConnection = (): Promise<pg.PoolClient> => {
         reject(error);
         return;
       }
-      resolve(connection as pg.PoolClient);
+      if (connection) {
+        resolve(connection);
+      }
     });
   });
 };
