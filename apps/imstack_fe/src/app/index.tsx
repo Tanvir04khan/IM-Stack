@@ -5,7 +5,8 @@ function App(): JSX.Element {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <Button>Login</Button>
+      <Button size="sm">Login</Button>
+      <textarea className="w-full h-svh border-spacing-0" />
     </>
   );
 }

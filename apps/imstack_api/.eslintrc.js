@@ -5,4 +5,7 @@ module.exports = {
   parserOptions: {
     project: true,
   },
+  rules: {
+    "@typescript-eslint/no-unsafe-assignment": "error",
+  },
 };
