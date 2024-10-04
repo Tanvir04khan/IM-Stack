@@ -22,8 +22,6 @@ export const Users = pgTable("Users", {
   lastName: varchar("lastName", { length: 100 }).notNull(),
   emailId: varchar("emailId", { length: 200 }).notNull(),
   password: text("password").notNull(),
-  projects: uuid("projects").array(),
-  roles: uuid("roles").array().notNull(),
 });
 
 export const Projects = pgTable("Projects", {
@@ -74,7 +72,7 @@ export const Answers = pgTable("Answers", {
   answerId: uuid("answerId").defaultRandom().notNull().primaryKey(),
   answer: text("answer").notNull(),
   answeredOn: timestamp("answeredOn").notNull().defaultNow(),
-  userId: uuid("userID")
+  userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
   questionId: uuid("questionId")
@@ -86,7 +84,7 @@ export const Comments = pgTable("Comments", {
   commentId: uuid("commentId").defaultRandom().notNull().primaryKey(),
   comment: text("comment").notNull(),
   commentedOn: timestamp("commentedOn").notNull().defaultNow(),
-  userId: uuid("userID")
+  userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
   type: varchar("type", { length: 50 }).notNull(),
@@ -100,25 +98,35 @@ export const Comments = pgTable("Comments", {
 
 export const Votes = pgTable("Votes", {
   voteId: uuid("voteId").defaultRandom().notNull().primaryKey(),
-  voteCount: integer("voteCount").notNull(),
-  maxVoteCount: integer("maxVoteCount").notNull(),
   answerId: uuid("answerId")
     .references((): AnyPgColumn => Answers.answerId)
     .notNull(),
-  usersId: uuid("usersId").array(),
+  userId: uuid("userId")
+    .references((): AnyPgColumn => Users.userId)
+    .notNull(),
 });
 
-export const Awards = pgTable("Awards", {
-  awardId: uuid("awardId").defaultRandom().notNull().primaryKey(),
+export const Rewards = pgTable("Rewards", {
+  rewardId: uuid("rewardId").defaultRandom().notNull().primaryKey(),
   score: integer("score").notNull(),
-  userId: uuid("userID")
+  userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
 });
 
 export const Roles = pgTable("Roles", {
   roleId: uuid("roleId").defaultRandom().notNull().primaryKey(),
-  role: varchar("role", { length: 50 }).notNull(),
+  role: varchar("role", { length: 100 }).notNull(),
+});
+
+export const UsersRoles = pgTable("UsersRoles", {
+  usersRoleId: uuid("usersRoleId").defaultRandom().notNull().primaryKey(),
+  userId: uuid("userId")
+    .references((): AnyPgColumn => Users.userId)
+    .notNull(),
+  roleId: uuid("roleId")
+    .references((): AnyPgColumn => Roles.roleId)
+    .notNull(),
 });
 
 // relations
@@ -128,7 +136,12 @@ export const usersRelations = relations(Users, ({ one, many }) => ({
   Questions: many(Questions),
   Answers: many(Answers),
   Comments: many(Comments),
-  Awards: one(Awards, { fields: [Users.userId], references: [Awards.awardId] }),
+  UsersRoles: many(UsersRoles),
+  Votes: many(Votes),
+  Rewards: one(Rewards, {
+    fields: [Users.userId],
+    references: [Rewards.rewardId],
+  }),
 }));
 
 export const questionsRelations = relations(Questions, ({ many }) => ({
@@ -143,6 +156,10 @@ export const answersRelations = relations(Answers, ({ one, many }) => ({
 
 export const projectsRelations = relations(Projects, ({ many }) => ({
   Questions: many(Questions),
+}));
+
+export const RolesRelations = relations(UsersRoles, ({ many }) => ({
+  UsersRoles: many(UsersRoles),
 }));
 
 export const TechnologiesRelations = relations(Technologies, ({ many }) => ({
