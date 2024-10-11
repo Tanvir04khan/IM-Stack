@@ -5,4 +5,13 @@ module.exports = {
   parserOptions: {
     project: true,
   },
+  "unicorn/filename-case": [
+    "error",
+    {
+      cases: {
+        camelCase: true,
+        pascalCase: true,
+      },
+    },
+  ],
 };

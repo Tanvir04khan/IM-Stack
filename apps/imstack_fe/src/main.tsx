@@ -1,14 +1,25 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./app";
+import { RouterProvider } from "@tanstack/react-router";
 import "./index.css";
+import { ClerkProvider } from "@clerk/clerk-react";
+import { ThemeProvider } from "./components/theme/theme-provider";
+import { router } from "./routes/routes";
+import Header from "./components/Header";
 
 const el = document.getElementById("root");
+
+const publishbleKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string;
 if (el) {
   const root = createRoot(el);
+
   root.render(
     <React.StrictMode>
-      <App />
+      <ClerkProvider publishableKey={publishbleKey ?? ""}>
+        <ThemeProvider storageKey="imstackTheme">
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </ClerkProvider>
     </React.StrictMode>
   );
 } else {
