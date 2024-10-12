@@ -6,6 +6,7 @@ import {
 import Root from "./Root";
 import Auth from "@/screens/Auth";
 import Home from "@/screens/Home";
+import ProjectDocs from "@/screens/ProjectDocs";
 
 export const rootRoute = createRootRoute({
   component: Root,
@@ -26,7 +27,13 @@ export const routesWithCpmponent = [
   {
     getParentRoute: () => rootRoute,
     path: "/projectdocs",
-    component: Home,
+    component: ProjectDocs,
+    children: [
+      {
+        path: "/test",
+        component: Home,
+      },
+    ],
   },
   {
     getParentRoute: () => rootRoute,
@@ -45,6 +52,7 @@ export const routesWithCpmponent = [
   },
 ];
 
-const routes = routesWithCpmponent.map((route) => createRoute(route));
+let routes = routesWithCpmponent.map((route) => createRoute(route));
+
 const routeTree = rootRoute.addChildren(routes);
 export const router = createRouter({ routeTree });

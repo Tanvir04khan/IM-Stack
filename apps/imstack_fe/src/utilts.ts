@@ -1,14 +1,15 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { totalActivitiesEnum } from "./enum";
+import { TotalActivities } from "./enum";
 import {
   FileQuestion,
   FolderSync,
-  LucideProps,
   PanelsTopLeft,
   Vote,
+  Eye,
 } from "lucide-react";
+import { NavItemsType, TotalActivitiesType } from "./type";
+import { ActivityPropsType } from "./components/Activity";
 
-export const navItems: { item: string; path: string }[] = [
+export const navItems: NavItemsType[] = [
   {
     item: "Home",
     path: "/home",
@@ -31,31 +32,40 @@ export const navItems: { item: string; path: string }[] = [
   },
 ];
 
-export const totalActivities: {
-  title: totalActivitiesEnum;
-  Icon: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
-  timeSpan: string;
-}[] = [
+export const totalActivities: TotalActivitiesType[] = [
   {
-    title: totalActivitiesEnum.totalProjects,
+    title: TotalActivities.TOTALPROJECTS,
     Icon: PanelsTopLeft,
     timeSpan: "from last 3 month",
   },
   {
-    title: totalActivitiesEnum.totalQuestions,
+    title: TotalActivities.TOTALQUESTIONS,
     Icon: FileQuestion,
     timeSpan: "from last 3 month",
   },
   {
-    title: totalActivitiesEnum.totalAnswers,
+    title: TotalActivities.TOTALANSWERS,
     Icon: FolderSync,
     timeSpan: "from last 3 month",
   },
   {
-    title: totalActivitiesEnum.totalVotes,
+    title: TotalActivities.TOTALVOTES,
     Icon: Vote,
     timeSpan: "from last 3 month",
+  },
+];
+
+export const questionActivities: ActivityPropsType[] = [
+  {
+    Icon: Eye,
+    value: 600,
+  },
+  {
+    Icon: FolderSync,
+    value: 10,
+  },
+  {
+    Icon: Vote,
+    value: 200,
   },
 ];
