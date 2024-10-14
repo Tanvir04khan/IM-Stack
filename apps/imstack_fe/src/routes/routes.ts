@@ -7,6 +7,8 @@ import Root from "./Root";
 import Auth from "@/screens/Auth";
 import Home from "@/screens/Home";
 import ProjectDocs from "@/screens/ProjectDocs";
+import ProjectDocsDetail from "@/screens/ProjectDocsDetail";
+import CreateProjects from "@/screens/CreateProjects";
 
 export const rootRoute = createRootRoute({
   component: Root,
@@ -28,12 +30,16 @@ export const routesWithCpmponent = [
     getParentRoute: () => rootRoute,
     path: "/projectdocs",
     component: ProjectDocs,
-    children: [
-      {
-        path: "/test",
-        component: Home,
-      },
-    ],
+  },
+  {
+    getParentRoute: () => rootRoute,
+    path: "/projectdocs/$projectdocsId",
+    component: ProjectDocsDetail,
+  },
+  {
+    getParentRoute: () => rootRoute,
+    path: "/projectdocs/createprojects",
+    component: CreateProjects,
   },
   {
     getParentRoute: () => rootRoute,

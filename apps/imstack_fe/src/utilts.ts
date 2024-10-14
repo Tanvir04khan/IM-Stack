@@ -57,14 +57,17 @@ export const totalActivities: TotalActivitiesType[] = [
 
 export const questionActivities: ActivityPropsType[] = [
   {
+    name: "Views",
     Icon: Eye,
     value: 600,
   },
   {
+    name: "Answers",
     Icon: FolderSync,
     value: 10,
   },
   {
+    name: "Votes",
     Icon: Vote,
     value: 200,
   },
