@@ -7,48 +7,98 @@ import IMStackLogo from "../images/IMSTACKLOGO.png";
 import { Edit } from "lucide-react";
 import TextEditor from "@/components/TextEditor";
 import Button from "@/components/Button";
+import { AvatarIcon, UpdateIcon } from "@radix-ui/react-icons";
+import CreateProjectContent from "@/components/CreateProjectContent";
+import Tooltip from "@/components/ToolTip";
+import ActivityCard from "@/components/ActivityCard";
+import InfoDisplay, { InfoDisplayPropsType } from "@/components/InfoDisplay";
+import { AvatarWithTooltip } from "@/type";
+import ProjectDocsDetailsDesc from "@/components/ProjectDocsDetailsDesc";
+import ProjectDocsDetailContent from "@/components/ProjectDocsDetailContent";
+
+const createUpdateDetails: InfoDisplayPropsType[] = [
+  {
+    lable: "Created By",
+    value: "Tanvir Khan",
+  },
+  {
+    lable: "Created On",
+    value: "20/04/2024",
+  },
+  {
+    lable: "Updated By",
+    value: "Tanvir Khan",
+  },
+  {
+    lable: "Updated On",
+    value: "20/04/2024",
+  },
+];
+
+const liveUsers: AvatarWithTooltip[] = [
+  {
+    name: "Tanvir Khan",
+    avatar: <AvatarIcon className="h-8 w-8" />,
+  },
+  {
+    name: "Tanvir Khan",
+    avatar: <AvatarIcon className="h-8 w-8" />,
+  },
+  {
+    name: "Tanvir Khan",
+    avatar: <AvatarIcon className="h-8 w-8" />,
+  },
+];
 
 const ProjectDocsDetail = () => {
   const { projectdocsId } = useParams({ strict: false });
   const [isEditable, setIsEditable] = useState(false);
   const [editorContent, setEditorContent] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
 
   const handleContent = (content: string) => {
     setEditorContent(content);
   };
 
+  const handleEditButton = () => {
+    setIsEditable((ps) => !ps);
+  };
   const handleUpdateButton = () => {
     setIsEditable((ps) => !ps);
+  };
+
+  const handleProjectName = (value: string) => {
+    setProjectName(value);
   };
 
   return (
     <Header>
       <Card
         title={<ProjectTitle imageSrc={IMStackLogo} ProjectName="IM Stack" />}
-        description={`Project details`}
+        description={isEditable && <ProjectDocsDetailsDesc users={liveUsers} />}
         action={
-          <Button content="Update" onClick={handleUpdateButton}>
-            <Edit className="h-4 w-4" />
-          </Button>
+          isEditable ? (
+            <Button content="Update" onClick={handleUpdateButton}>
+              <UpdateIcon className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button content="Edit" onClick={handleEditButton}>
+              <Edit className="h-4 w-4" />
+            </Button>
+          )
         }
         content={
-          <div>
-            <h1>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta
-              delectus minima dignissimos iste iure amet nihil ullam libero quam
-              quos nemo, sint veritatis distinctio earum ea mollitia a, at
-              minus.
-            </h1>
-            {isEditable ? (
-              <TextEditor
-                placeholder="Type here ..."
-                value={editorContent}
-                handleContent={handleContent}
-              />
-            ) : (
-              <div dangerouslySetInnerHTML={{ __html: editorContent }} />
-            )}
-          </div>
+          <ProjectDocsDetailContent
+            projectName={projectName}
+            editorContent={editorContent}
+            createUpdateDetails={createUpdateDetails}
+            selectedImage={selectedImage}
+            isEditable={isEditable}
+            handleContent={handleContent}
+            handleImageChange={() => {}}
+            setProjectName={handleProjectName}
+          />
         }
       />
     </Header>

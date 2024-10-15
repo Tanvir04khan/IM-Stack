@@ -12,7 +12,6 @@ import React, { useState } from "react";
 
 const CreateProjects = () => {
   const [content, setContent] = useState("");
-  const [summray, setSummary] = useState("");
   const [projectName, setProjectName] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -35,12 +34,10 @@ const CreateProjects = () => {
         content={
           <CreateProjectContent
             projectName={projectName}
-            summary={summray}
             textEditorContent={content}
             selectedImage={selectedImage}
             handleImageChange={handleImageChange}
             handleContent={handleContent}
-            setSummary={setSummary}
             setProjectName={setProjectName}
           />
         }

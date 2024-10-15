@@ -16,7 +16,7 @@ const Tooltip = ({ content, children }: TooltipPropsType) => {
     <TooltipProvider>
       <SCNTooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="bg-gray-900 text-white">
           <p>{content}</p>
         </TooltipContent>
       </SCNTooltip>
