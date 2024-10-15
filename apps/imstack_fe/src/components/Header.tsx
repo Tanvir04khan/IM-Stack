@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { CircleUser, Layers, Menu, Package2, Search } from "lucide-react";
+import { CircleUser, Layers, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link } from "@tanstack/react-router";
+import { Link, useMatch } from "@tanstack/react-router";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { useAuth } from "@clerk/clerk-react";
 import { navItems } from "@/utilts";
+import { cn } from "@/lib/utils";
 
 type HeaderPropsType = {
   children: ReactNode;
@@ -22,6 +23,7 @@ type HeaderPropsType = {
 
 const Header = ({ children }: HeaderPropsType) => {
   const { signOut } = useAuth();
+  const { fullPath } = useMatch({ from: "" });
 
   const handleSignOut = async () => {
     try {
@@ -48,7 +50,10 @@ const Header = ({ children }: HeaderPropsType) => {
           {navItems.map(({ item, path }) => (
             <Link
               to={path}
-              className="text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
+              className={cn(
+                "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
+                { "text-foreground": fullPath?.includes(path) }
+              )}
             >
               {item}
             </Link>
@@ -93,7 +98,10 @@ const Header = ({ children }: HeaderPropsType) => {
               {navItems.map(({ item, path }) => (
                 <Link
                   to={path}
-                  className="text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
+                  className={cn(
+                    "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
+                    { "text-foreground": fullPath?.includes(path) }
+                  )}
                 >
                   {item}
                 </Link>
@@ -133,7 +141,9 @@ const Header = ({ children }: HeaderPropsType) => {
         </div>
       </header>
       <main
-        className={`flex items-center min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10`}
+        className={
+          "flex items-center min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10"
+        }
       >
         {children}
       </main>

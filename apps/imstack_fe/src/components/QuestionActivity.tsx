@@ -9,7 +9,7 @@ const QuestionActivity = ({
   questionActivities,
 }: QuestionActivityPropsType) => {
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col max-w-16">
       {questionActivities.map((item) => (
         <Activity {...item} />
       ))}

@@ -19,8 +19,6 @@ type TablePropsType = {
 };
 
 const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
-  const navigation = useNavigate();
-
   return (
     <STable className="w-full">
       <TableHeader>
@@ -45,11 +43,7 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
       </TableHeader>
       <TableBody>
         {rows.map((item) => (
-          <TableRow
-            onClick={() =>
-              navigation({ to: "/projectdocs/Test", from: "/projectdocs" })
-            }
-          >
+          <TableRow>
             {isSelectable && (
               <TableCell>
                 <Checkbox

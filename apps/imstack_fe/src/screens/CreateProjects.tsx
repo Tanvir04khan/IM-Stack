@@ -2,11 +2,6 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import CreateProjectContent from "@/components/CreateProjectContent";
 import Header from "@/components/Header";
-import Input from "@/components/Input";
-import TextEditor from "@/components/TextEditor";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Link } from "@tanstack/react-router";
 import { FilePlus } from "lucide-react";
 import React, { useState } from "react";
 

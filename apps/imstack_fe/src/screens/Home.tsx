@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import Header from "@/components/Header";
 
-import { ArrowUpRightIcon, Eye, FolderSync, Vote } from "lucide-react";
+import { ArrowUpRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { ProductsColumn, QuestionsColumn, TotalActivities } from "@/enum";
@@ -97,14 +97,14 @@ const projectColumns: TableColumnsType[] = [
   },
 ];
 
-const questionColumns: TableColumnsType[] = [
+export const questionColumns: TableColumnsType[] = [
   { field: QuestionsColumn.TITLE, title: "Title", textAlignment: "left" },
   { field: QuestionsColumn.ASKEDBY, title: "Asked By", textAlignment: "left" },
   { field: QuestionsColumn.ASKEDON, title: "Asked On", textAlignment: "left" },
   { field: QuestionsColumn.ACTIVITY, title: "Activity", textAlignment: "left" },
 ];
 
-const questionRows: QuestionsRowsType[] = [
+export const questionRows: QuestionsRowsType[] = [
   {
     title: (
       <Question

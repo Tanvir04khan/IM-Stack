@@ -4,7 +4,7 @@ import React, {
   ForwardRefExoticComponent,
   RefAttributes,
 } from "react";
-import Tooltip from "./ToolTip";
+import Tooltip from "./Tooltip";
 
 export type ActivityPropsType = {
   name: string;

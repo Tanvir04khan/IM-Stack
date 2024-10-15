@@ -1,81 +1,125 @@
 import React, { ReactNode } from "react";
 import Header from "@/components/Header";
-import Table from "@/components/Table";
 import { Input } from "@/components/ui/input";
 import { FilePlus } from "lucide-react";
-import ProjectTitle from "@/components/ProjectTitle";
-import { ProjectsRowstype, TableColumnsType } from "@/type";
-import { ProductsColumn } from "@/enum";
 import imstackLogo from "../images/IMSTACKLOGO.png";
 import ProjectCard from "@/components/ProjectCard";
 import { useNavigate } from "@tanstack/react-router";
 import Button from "@/components/Button";
+import Card from "@/components/Card";
+import ProjectTitle from "@/components/ProjectTitle";
+import Tag from "@/components/Tag";
 
-const projects: { image: string; name: string; id: string }[] = [
+const projects: {
+  image: string;
+  name: string;
+  id: string;
+  summary: string;
+  technologies: string[];
+}[] = [
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
   {
     image: imstackLogo,
     name: " IM Stack",
     id: "test",
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
+    technologies: ["React JS", "Java Script", "CRM", "Dot Net"],
   },
 ];
 
@@ -106,9 +150,27 @@ const ProjectDocs = () => {
             </Button>
           </div>
         </div>
-        <div className="grid gap-4  grid-cols-1  max-w-screen-lg items-center justify-center md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {projects.map(({ image, name, id }) => (
-            <ProjectCard key={name} image={image} name={name} id={id} />
+        <div className="w-full flex flex-col gap-4">
+          {projects.map(({ image, name, summary, id, technologies }) => (
+            // <ProjectCard key={name} image={image} name={name} id={id} />
+            <Card
+              onClick={() =>
+                navigation({ from: "/projectdocs", to: `/projectdocs/${id}` })
+              }
+              className="hover:shadow-lg duration-100 cursor-pointer"
+              key={name}
+              title={<ProjectTitle ProjectName={name} imageSrc={image} />}
+              description={
+                <div className="w-full flex flex-row gap-1">
+                  {technologies.map((i) => (
+                    <Tag content={i} />
+                  ))}
+                </div>
+              }
+              content={
+                summary.length > 200 ? `${summary.slice(0, 140)}...` : summary
+              }
+            />
           ))}
         </div>
       </div>
