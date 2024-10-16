@@ -26,7 +26,7 @@ const AskQuestionAction = ({
   return (
     <Dialog
       title="Review Question"
-      description="Please review the question before post."
+      description="Please review the question before posting."
       content={
         <div className="flex flex-col items-left justify-left gap-2">
           <InfoDisplay lable="Title" value={title} />
