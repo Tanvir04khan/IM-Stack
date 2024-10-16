@@ -39,7 +39,8 @@ const TextEditor = ({
       readonly: false, // all options from https://xdsoft.net/jodit/docs/,
       placeholder: placeholder || "Start typings...",
       buttons: options,
-
+      askBeforePasteHTML: false,
+      askBeforePasteFromWord: false,
       uploader: {
         insertImageAsBase64URI: true, // Upload image as Base64 data URL
       },

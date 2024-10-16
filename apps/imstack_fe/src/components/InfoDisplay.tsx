@@ -1,8 +1,8 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 export type InfoDisplayPropsType = {
   lable: string;
-  value: string | number;
+  value: ReactNode;
 };
 
 const InfoDisplay = ({ lable, value }: InfoDisplayPropsType) => {

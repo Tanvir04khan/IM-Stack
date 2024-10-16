@@ -1,17 +1,29 @@
+import AskQuestionAction from "@/components/AskQuestionAction";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
+import Dialog from "@/components/Dialog";
 import Header from "@/components/Header";
+import InfoDisplay from "@/components/InfoDisplay";
 import Input from "@/components/Input";
 import MultiSelectDropdown from "@/components/MultiselectorDropdown";
 import TextEditor from "@/components/TextEditor";
-import { Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Plus, Upload } from "lucide-react";
 import React, { useState } from "react";
 
 const AskQuestion = () => {
   const [editorContent, setEditorContent] = useState("");
+  const [selectedTech, setSelectedTech] = useState<string[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   const handleContent = (newContent: string) => {
     setEditorContent(newContent);
+  };
+
+  const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
   };
 
   return (
@@ -19,31 +31,49 @@ const AskQuestion = () => {
       <Card
         title="New Question"
         action={
-          <Button content="Add" onClick={() => {}}>
-            <Plus className="w-4 h-4" />
-          </Button>
+          <AskQuestionAction
+            title={title}
+            technology={selectedTech.join(", ")}
+            Project={selectedProject.join(", ")}
+            editorContent={editorContent}
+            isReviewDialogOpen={isReviewDialogOpen}
+            setIsReviewDialogOpen={setIsReviewDialogOpen}
+            handlePostQuestion={() => {}}
+          />
         }
         content={
-          <div>
-            <div>
+          <div className="flex flex-col gap-8">
+            <div className="grid gap-4 md:grid-cols-2 ">
               <Input
                 lable="Title"
                 placeholder="Title..."
                 type="text"
-                value={""}
-                onChange={() => {}}
+                value={title}
+                onChange={handleTitle}
               />
               <MultiSelectDropdown
-                label="Technologies"
+                label="Technology"
+                placeholder="Select technology..."
                 options={["React JS", "JS", "TS", "Dot Net", "CRM"]}
-                onSelect={() => {}}
+                value={selectedTech}
+                onSelect={setSelectedTech}
+              />
+              <MultiSelectDropdown
+                label="Project"
+                placeholder="Select Project..."
+                options={["IM stack", "X4A", "X4C", "X4V", "X4S"]}
+                value={selectedProject}
+                onSelect={setSelectedProject}
               />
             </div>
-            <TextEditor
-              placeholder="Type here..."
-              value={editorContent}
-              handleContent={handleContent}
-            />
+            <div className="flex flex-col gap-2">
+              <Label>Question</Label>
+              <TextEditor
+                placeholder="Type here..."
+                value={editorContent}
+                handleContent={handleContent}
+              />
+            </div>
           </div>
         }
       />

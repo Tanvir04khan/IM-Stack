@@ -163,7 +163,7 @@ const ProjectDocs = () => {
               description={
                 <div className="w-full flex flex-row gap-1">
                   {technologies.map((i) => (
-                    <Tag content={i} />
+                    <Tag key={i} content={i} />
                   ))}
                 </div>
               }

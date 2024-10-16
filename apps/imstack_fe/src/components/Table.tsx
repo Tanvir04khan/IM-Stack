@@ -34,6 +34,7 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
           )}
           {columns.map(({ title, textAlignment }: TableColumnsType) => (
             <TableHead
+              key={title}
               className={`font-${textAlignment} font-medium whitespace-nowrap`}
             >
               {title}
@@ -42,8 +43,8 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {rows.map((item) => (
-          <TableRow>
+        {rows.map((item, i) => (
+          <TableRow key={i}>
             {isSelectable && (
               <TableCell>
                 <Checkbox
@@ -55,7 +56,9 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
             )}
             {columns.map(({ field, textAlignment }) => (
               <TableCell
-                className={`font-${textAlignment} font-medium whitespace-nowrap`}
+                className={
+                  "font-" + textAlignment + " font-medium whitespace-nowrap"
+                }
               >
                 {item[field]}
               </TableCell>

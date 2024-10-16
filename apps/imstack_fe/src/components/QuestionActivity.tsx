@@ -11,7 +11,7 @@ const QuestionActivity = ({
   return (
     <div className="flex flex-col max-w-16">
       {questionActivities.map((item) => (
-        <Activity {...item} />
+        <Activity key={item.name} {...item} />
       ))}
     </div>
   );

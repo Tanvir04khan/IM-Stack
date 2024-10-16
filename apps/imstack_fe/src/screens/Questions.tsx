@@ -110,6 +110,7 @@ const Questions = () => {
         <div className="w-full flex flex-col gap-4">
           {questions.map(({ title, question, activity, relatedTo, id }) => (
             <Card
+              key={title}
               className="hover:shadow-lg duration-100 cursor-pointer"
               title={title.length > 200 ? `${title.slice(0, 200)}...` : title}
               content={
@@ -121,7 +122,7 @@ const Questions = () => {
               description={
                 <div className="w-full flex flex-row gap-1">
                   {relatedTo.map((i) => (
-                    <Tag content={i} />
+                    <Tag key={i} content={i} />
                   ))}
                 </div>
               }

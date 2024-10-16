@@ -49,6 +49,7 @@ const Header = ({ children }: HeaderPropsType) => {
           </Link>
           {navItems.map(({ item, path }) => (
             <Link
+              key={item}
               to={path}
               className={cn(
                 "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
@@ -97,6 +98,7 @@ const Header = ({ children }: HeaderPropsType) => {
               </Link>
               {navItems.map(({ item, path }) => (
                 <Link
+                  key={item}
                   to={path}
                   className={cn(
                     "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
