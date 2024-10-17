@@ -13,6 +13,7 @@ type ButtonPropsType = {
     | "link";
   onClick: (e: SyntheticEvent) => void;
   type?: "submit" | "reset" | "button" | undefined;
+  className?: string;
 };
 
 const Button = ({
@@ -21,9 +22,15 @@ const Button = ({
   onClick,
   variant = "default",
   type,
+  className,
 }: ButtonPropsType) => {
   return (
-    <SCNButton variant={variant} type={type} onClick={(e) => onClick(e)}>
+    <SCNButton
+      className={className}
+      variant={variant}
+      type={type}
+      onClick={(e) => onClick(e)}
+    >
       <div className="flex flex-row gap-1 items-center">
         <p>{content}</p>
         {children}

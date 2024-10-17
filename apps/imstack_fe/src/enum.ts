@@ -19,3 +19,9 @@ export enum QuestionsColumn {
   ASKEDON = "askedOn",
   ACTIVITY = "activity",
 }
+
+export enum UsersColumn {
+  USERNAME = "userName",
+  EMAIL = "email",
+  JOINEDON = "joinedOn",
+}

@@ -4,7 +4,12 @@ import {
   ReactNode,
   RefAttributes,
 } from "react";
-import { ProductsColumn, QuestionsColumn, TotalActivities } from "./enum";
+import {
+  ProductsColumn,
+  QuestionsColumn,
+  TotalActivities,
+  UsersColumn,
+} from "./enum";
 import { LucideProps } from "lucide-react";
 import { IconProps } from "@radix-ui/react-icons/dist/types";
 
@@ -19,7 +24,7 @@ export type TotalActivitiesType = {
 };
 
 export type TableColumnsType = {
-  field: ProductsColumn | QuestionsColumn;
+  field: ProductsColumn | QuestionsColumn | UsersColumn;
   title: string;
   textAlignment: "right" | "left" | "center";
 };
@@ -38,6 +43,12 @@ export type QuestionsRowsType = {
   isSelected?: boolean;
 } & {
   [key in QuestionsColumn]: ReactNode;
+};
+
+export type UsersRowsType = {
+  isSelected?: boolean;
+} & {
+  [key in UsersColumn]: ReactNode;
 };
 
 export type AvatarWithTooltip = {

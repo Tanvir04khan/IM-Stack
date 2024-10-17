@@ -13,7 +13,7 @@ type CardPropsType = {
   description?: ReactNode;
   content: ReactNode;
   action?: ReactNode;
-  titleReverse?: boolean;
+  actionTitleReverse?: boolean;
   className?: string;
   onClick?: () => void;
 };
@@ -23,7 +23,7 @@ const Card = ({
   description,
   content,
   action,
-  titleReverse,
+  actionTitleReverse,
   className,
   onClick,
 }: CardPropsType) => {
@@ -34,8 +34,8 @@ const Card = ({
     >
       <CardHeader
         className={cn("flex items-center gap-6", {
-          "flex-row": !titleReverse,
-          "flex-row-reverse": titleReverse,
+          "flex-row": !actionTitleReverse,
+          "flex-row-reverse": actionTitleReverse,
         })}
       >
         <div className="grid gap-2 items-center justify-between w-full">

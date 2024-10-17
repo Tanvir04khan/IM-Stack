@@ -30,17 +30,7 @@ const AskQuestion = () => {
     <Header>
       <Card
         title="New Question"
-        action={
-          <AskQuestionAction
-            title={title}
-            technology={selectedTech.join(", ")}
-            Project={selectedProject.join(", ")}
-            editorContent={editorContent}
-            isReviewDialogOpen={isReviewDialogOpen}
-            setIsReviewDialogOpen={setIsReviewDialogOpen}
-            handlePostQuestion={() => {}}
-          />
-        }
+        description="Before asking your question, please use the search feature in questions tab to ensure it hasn't already been answered. This helps us avoid duplicate questions and ensures you get the best possible solution faster."
         content={
           <div className="flex flex-col gap-8">
             <div className="grid gap-4 md:grid-cols-2 ">
@@ -74,6 +64,15 @@ const AskQuestion = () => {
                 handleContent={handleContent}
               />
             </div>
+            <AskQuestionAction
+              title={title}
+              technology={selectedTech.join(", ")}
+              Project={selectedProject.join(", ")}
+              editorContent={editorContent}
+              isReviewDialogOpen={isReviewDialogOpen}
+              setIsReviewDialogOpen={setIsReviewDialogOpen}
+              handlePostQuestion={() => {}}
+            />
           </div>
         }
       />

@@ -52,7 +52,7 @@ const AskQuestionAction = ({
       isOpen={isReviewDialogOpen}
       setIsOpen={(value: boolean) => setIsReviewDialogOpen(value)}
     >
-      <Button content="Add" onClick={() => {}}>
+      <Button className="max-w-20" content="Add" onClick={() => {}}>
         <Plus className="w-4 h-4" />
       </Button>
     </Dialog>

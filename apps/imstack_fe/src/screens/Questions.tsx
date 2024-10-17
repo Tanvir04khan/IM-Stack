@@ -118,7 +118,12 @@ const Questions = () => {
                   ? `${question.slice(0, 140)}...`
                   : question
               }
-              action={<QuestionActivity questionActivities={activity} />}
+              action={
+                <QuestionActivity
+                  questionActivities={activity}
+                  className="flex flex-row  max-w-16 sm:flex-col"
+                />
+              }
               description={
                 <div className="w-full flex flex-row gap-1">
                   {relatedTo.map((i) => (
@@ -126,7 +131,7 @@ const Questions = () => {
                   ))}
                 </div>
               }
-              titleReverse
+              actionTitleReverse
               onClick={() =>
                 navigation({ from: "/questions", to: `/questions/${id}` })
               }
