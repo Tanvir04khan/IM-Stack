@@ -13,8 +13,9 @@ type CardPropsType = {
   description?: ReactNode;
   content: ReactNode;
   action?: ReactNode;
-  actionTitleReverse?: boolean;
   className?: string;
+  headerActionClassName?: string;
+  actionClassName?: string;
   onClick?: () => void;
 };
 
@@ -23,8 +24,9 @@ const Card = ({
   description,
   content,
   action,
-  actionTitleReverse,
+  headerActionClassName,
   className,
+  actionClassName,
   onClick,
 }: CardPropsType) => {
   return (
@@ -33,10 +35,7 @@ const Card = ({
       onClick={onClick}
     >
       <CardHeader
-        className={cn("flex items-center gap-6", {
-          "flex-row": !actionTitleReverse,
-          "flex-row-reverse": actionTitleReverse,
-        })}
+        className={headerActionClassName || "flex flex-row items-center gap-6"}
       >
         <div className="grid gap-2 items-center justify-between w-full">
           <div className="flex flex-col gap-2 items-left justify-center">
@@ -48,13 +47,9 @@ const Card = ({
             )}
           </div>
         </div>
-        <div>{action}</div>
+        <div className={actionClassName}>{action}</div>
       </CardHeader>
-      <CardContent className="text-justify">
-        {typeof content === "string" && content.length > 200
-          ? `${content.slice(0, 200)}...`
-          : content}
-      </CardContent>
+      <CardContent className="text-justify">{content}</CardContent>
     </SCNCard>
   );
 };

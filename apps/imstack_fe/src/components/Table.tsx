@@ -7,13 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
-import { TableColumnsType, TableRowsType } from "@/type";
+import { TableColumnsType } from "@/type";
 import { Checkbox } from "./ui/checkbox";
-import { useNavigate } from "@tanstack/react-router";
 
 type TablePropsType = {
   columns: TableColumnsType[];
-  rows: TableRowsType[];
+  rows: any[];
   isSelectable?: boolean;
   setRows?: () => void;
 };
@@ -44,7 +43,12 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
       </TableHeader>
       <TableBody>
         {rows.map((item, i) => (
-          <TableRow key={i}>
+          <TableRow
+            key={i}
+            onClick={() => {
+              item.onClick(item);
+            }}
+          >
             {isSelectable && (
               <TableCell>
                 <Checkbox

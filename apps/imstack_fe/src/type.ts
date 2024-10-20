@@ -30,6 +30,8 @@ export type TableColumnsType = {
 };
 
 export type TableRowsType = {
+  onClick?: () => void;
+} & {
   [key in any]: ReactNode;
 };
 
@@ -47,6 +49,8 @@ export type QuestionsRowsType = {
 
 export type UsersRowsType = {
   isSelected?: boolean;
+  onClick?: (item: UsersRowsType) => void;
+  userId: string;
 } & {
   [key in UsersColumn]: ReactNode;
 };

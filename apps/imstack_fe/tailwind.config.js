@@ -74,6 +74,9 @@ module.exports = {
       width: {
         "max-content": "max-content",
       },
+      height: {
+        "max-content": "max-content",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

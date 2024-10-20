@@ -14,12 +14,8 @@ const CreateProjects = () => {
     setContent(newContent);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-    }
+  const handleImageChange = (value: string | null) => {
+    setSelectedImage(value);
   };
 
   return (

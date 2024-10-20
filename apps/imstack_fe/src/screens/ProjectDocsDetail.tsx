@@ -51,7 +51,7 @@ const ProjectDocsDetail = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [projectName, setProjectName] = useState("");
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>("");
 
   const handleContent = (content: string) => {
     setEditorContent(content);
@@ -66,6 +66,9 @@ const ProjectDocsDetail = () => {
 
   const handleProjectName = (value: string) => {
     setProjectName(value);
+  };
+  const handleImageChange = (value: string | null) => {
+    setSelectedImage(value);
   };
 
   return (
@@ -92,7 +95,7 @@ const ProjectDocsDetail = () => {
             selectedImage={selectedImage}
             isEditable={isEditable}
             handleContent={handleContent}
-            handleImageChange={() => {}}
+            handleImageChange={handleImageChange}
             setProjectName={handleProjectName}
           />
         }

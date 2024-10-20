@@ -13,6 +13,7 @@ import Questions from "@/screens/Questions";
 import QuestionDetails from "@/screens/QuestionDetails";
 import AskQuestion from "@/screens/AskQuestion";
 import ManageUsers from "@/screens/ManageUsers";
+import UserDetails from "@/screens/userDetails";
 
 export const rootRoute = createRootRoute({
   component: Root,
@@ -64,6 +65,11 @@ export const routesWithCpmponent = [
     getParentRoute: () => rootRoute,
     path: "/manageusers",
     component: ManageUsers,
+  },
+  {
+    getParentRoute: () => rootRoute,
+    path: "/manageusers/$userId",
+    component: UserDetails,
   },
 ];
 

@@ -16,7 +16,7 @@ export type ActivityPropsType = {
 
 const Activity = forwardRef(({ Icon, value, name }: ActivityPropsType) => {
   return (
-    <div className="grid grid-cols-2 items-center cursor-pointer ">
+    <div className="flex flex-row items-center cursor-pointer gap-2">
       <Tooltip content={name}>
         <Icon className="h-4 w-4" />
       </Tooltip>

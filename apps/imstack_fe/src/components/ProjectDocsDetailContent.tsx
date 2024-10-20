@@ -8,7 +8,7 @@ type ProjectDocsDetailContentPropsType = {
   selectedImage: string | null;
   editorContent: string;
   setProjectName: (value: string) => void;
-  handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleImageChange: (val: string | null) => void;
   handleContent: (newContent: string) => void;
   isEditable: boolean;
 };

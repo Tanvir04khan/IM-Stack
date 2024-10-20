@@ -15,8 +15,9 @@ type DialogPropstype = {
   description?: ReactNode;
   action: ReactNode;
   content: ReactNode;
-  isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
+  className?: string;
+  isOpen?: boolean;
+  setIsOpen?: (value: boolean) => void;
 };
 
 const Dialog = ({
@@ -26,12 +27,13 @@ const Dialog = ({
   content,
   action,
   isOpen,
+  className,
   setIsOpen,
 }: DialogPropstype) => {
   return (
     <SCNDialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-5xl max-h-full h-auto overflow-y-scroll">
+      <DialogContent className={"max-w-5xl max-h-full h-auto " + className}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

@@ -25,6 +25,7 @@ const AskQuestionAction = ({
 }: AskQuestionActionPropsType) => {
   return (
     <Dialog
+      className="overflow-y-scroll hide-scrollbar"
       title="Review Question"
       description="Please review the question before posting."
       content={

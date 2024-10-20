@@ -159,16 +159,26 @@ const ProjectDocs = () => {
               }
               className="hover:shadow-lg duration-100 cursor-pointer"
               key={name}
-              title={<ProjectTitle ProjectName={name} imageSrc={image} />}
-              description={
-                <div className="w-full flex flex-row gap-1">
-                  {technologies.map((i) => (
-                    <Tag key={i} content={i} />
-                  ))}
-                </div>
+              title={
+                <ProjectTitle
+                  className="text-2xl"
+                  ProjectName={name}
+                  imageSrc={image}
+                />
               }
               content={
-                summary.length > 200 ? `${summary.slice(0, 140)}...` : summary
+                <div className="w-full flex flex-col gap-4">
+                  <div>
+                    {summary.length > 200
+                      ? `${summary.slice(0, 140)}...`
+                      : summary}
+                  </div>
+                  <div className="w-full flex flex-row gap-1">
+                    {technologies.map((i) => (
+                      <Tag key={i} content={i} />
+                    ))}
+                  </div>
+                </div>
               }
             />
           ))}

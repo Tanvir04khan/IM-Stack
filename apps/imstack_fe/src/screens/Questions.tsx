@@ -114,24 +114,23 @@ const Questions = () => {
               className="hover:shadow-lg duration-100 cursor-pointer"
               title={title.length > 200 ? `${title.slice(0, 200)}...` : title}
               content={
-                question.length > 200
-                  ? `${question.slice(0, 140)}...`
-                  : question
-              }
-              action={
-                <QuestionActivity
-                  questionActivities={activity}
-                  className="flex flex-row  max-w-16 sm:flex-col"
-                />
-              }
-              description={
-                <div className="w-full flex flex-row gap-1">
-                  {relatedTo.map((i) => (
-                    <Tag key={i} content={i} />
-                  ))}
+                <div className="w-full flex flex-col gap-4">
+                  <div>
+                    {question.length > 200
+                      ? `${question.slice(0, 140)}...`
+                      : question}
+                  </div>
+                  <div className="w-full flex flex-row gap-1">
+                    {relatedTo.map((i) => (
+                      <Tag key={i} content={i} />
+                    ))}
+                  </div>
+                  <QuestionActivity
+                    questionActivities={activity}
+                    className="flex flex-row gap-4 text-muted-foreground"
+                  />
                 </div>
               }
-              actionTitleReverse
               onClick={() =>
                 navigation({ from: "/questions", to: `/questions/${id}` })
               }
