@@ -2,17 +2,33 @@ import React from "react";
 import { Card } from "./ui/card";
 import { AvatarIcon } from "@radix-ui/react-icons";
 
-const CommentCard = () => {
+export type CommentCardPropsType = {
+  userName: string;
+  imageSrc?: string;
+  comment: string;
+  commentedOn: string;
+};
+
+const CommentCard = ({
+  userName,
+  imageSrc,
+  comment,
+  commentedOn,
+}: CommentCardPropsType) => {
   return (
     <Card className="w-full p-4">
-      <div className="flex items-center gap-2">
-        <AvatarIcon className="h-8 w-8" />
-        <div>
-          <p className="text-lg font-medium">TanvirKhan</p>
-          <p>can you provide more details. as it is not undertandable</p>
+      <div className="flex flex-col items-start gap-2">
+        <div className="flex items-center gap-2">
+          {imageSrc ? (
+            <img src={imageSrc} className="h-8 w-8 rounded-full" />
+          ) : (
+            <AvatarIcon className="h-8 w-8" />
+          )}
+          <p className="text-lg font-medium">{userName}</p>
         </div>
+        <p>{comment}</p>
       </div>
-      <p className="text-right">20/11/2024</p>
+      <p className="text-right">{commentedOn}</p>
     </Card>
   );
 };

@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type CardPropsType = {
-  title: ReactNode;
+  title?: ReactNode;
   description?: ReactNode;
   content: ReactNode;
   action?: ReactNode;
