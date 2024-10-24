@@ -113,6 +113,13 @@ const Questions = () => {
               key={title}
               className="hover:shadow-lg duration-100 cursor-pointer"
               title={title.length > 200 ? `${title.slice(0, 200)}...` : title}
+              description={
+                <Tag
+                  content={"3 Answers"}
+                  className="bg-[#fff] text-[#18864b] border-[1px] border-[#18864b]"
+                  // className="bg-[#18864b] text-[#fff] border-[1px] border-[#18864b]"
+                />
+              }
               content={
                 <div className="w-full flex flex-col gap-4">
                   <div>
@@ -126,7 +133,9 @@ const Questions = () => {
                     ))}
                   </div>
                   <QuestionActivity
-                    questionActivities={activity}
+                    questionActivities={activity.filter(
+                      ({ name }) => name !== "Answers"
+                    )}
                     className="flex flex-row gap-4 text-muted-foreground"
                   />
                 </div>

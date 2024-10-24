@@ -1,10 +1,19 @@
 import React from "react";
+import { Badge } from "./ui/badge";
 
-const Tag = ({ content }: { content: string | number }) => {
+type TagPropsType = {
+  content: string | number;
+  className?: string;
+};
+
+const Tag = ({
+  content,
+  className = "bg-[#5686f0] text-white",
+}: TagPropsType) => {
   return (
-    <h2 className="max-w-max px-2 rounded-full bg-[#5686f0] text-white">
+    <Badge className={"max-w-max px-2 rounded-full " + className}>
       {content}
-    </h2>
+    </Badge>
   );
 };
 

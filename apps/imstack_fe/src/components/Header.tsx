@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { CircleUser, Layers, Menu, Search } from "lucide-react";
+import { CircleUser, CoinsIcon, Layers, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link, useMatch } from "@tanstack/react-router";
+import { Link, useMatch, useNavigate } from "@tanstack/react-router";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { useAuth } from "@clerk/clerk-react";
 import { navItems } from "@/utilts";
 import { cn } from "@/lib/utils";
+import ProjectTitle from "./ProjectTitle";
+import imstackImage from "../images/IMSTACKLOGO.png";
 
 type HeaderPropsType = {
   children: ReactNode;
@@ -24,6 +26,7 @@ type HeaderPropsType = {
 const Header = ({ children }: HeaderPropsType) => {
   const { signOut } = useAuth();
   const { fullPath } = useMatch({ from: "" });
+  const navigation = useNavigate();
 
   const handleSignOut = async () => {
     try {
@@ -124,15 +127,18 @@ const Header = ({ children }: HeaderPropsType) => {
           </form>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
+              <Button variant="outline" size="icon">
+                <img src={imstackImage} className="h-8 w-8 rounded-full" />
+
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Tanvir Khan</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigation({ to: "/profile" })}>
+                Profile
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut}>
                 Logout

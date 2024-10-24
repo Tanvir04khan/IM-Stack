@@ -214,11 +214,12 @@ const QuestionDetails = () => {
             />
           }
           content={
-            <div className="w-full flex flex-col items-center justify-center gap-4">
+            <div className="w-full flex flex-col items-start justify-center gap-4">
+              <ProjectTitle ProjectName="Tanvir Khan" imageSrc={imstackImage} />
               {!isEditQuestionClicked ? (
                 <div
                   className="w-full"
-                  dangerouslySetInnerHTML={{ __html: content }}
+                  dangerouslySetInnerHTML={{ __html: question }}
                 ></div>
               ) : (
                 <TextEditor
@@ -228,10 +229,6 @@ const QuestionDetails = () => {
                 />
               )}
               <div className="w-full flex items-center justify-between ">
-                <ProjectTitle
-                  ProjectName="Tanvir Khan"
-                  imageSrc={imstackImage}
-                />
                 <Comment
                   comments={questionDetails.comments}
                   onPostComment={() => {}}
@@ -277,7 +274,11 @@ const QuestionDetails = () => {
               )
             }
             content={
-              <div className="w-full flex flex-col items-center justify-center gap-4">
+              <div className="w-full flex flex-col items-start justify-center gap-4">
+                <ProjectTitle
+                  ProjectName="Tanvir Khan"
+                  imageSrc={imstackImage}
+                />
                 <div className="flex items-center justify-between gap-4">
                   {!isEditAnswerClicked ? (
                     <div
@@ -304,16 +305,11 @@ const QuestionDetails = () => {
                     )}
                   </div>
                 </div>
-                <div className="w-full flex items-center justify-between ">
-                  <ProjectTitle
-                    ProjectName="Tanvir Khan"
-                    imageSrc={imstackImage}
-                  />
-                  <Comment
-                    comments={questionDetails.comments}
-                    onPostComment={() => {}}
-                  />
-                </div>
+
+                <Comment
+                  comments={questionDetails.comments}
+                  onPostComment={() => {}}
+                />
               </div>
             }
           />

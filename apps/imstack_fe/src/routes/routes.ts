@@ -13,7 +13,8 @@ import Questions from "@/screens/Questions";
 import QuestionDetails from "@/screens/QuestionDetails";
 import AskQuestion from "@/screens/AskQuestion";
 import ManageUsers from "@/screens/ManageUsers";
-import UserDetails from "@/screens/userDetails";
+import UserDetails from "@/screens/UserDetails";
+import Profile from "@/screens/Profile";
 
 export const rootRoute = createRootRoute({
   component: Root,
@@ -45,6 +46,11 @@ export const routesWithCpmponent = [
     getParentRoute: () => rootRoute,
     path: "/projectdocs/createprojects",
     component: CreateProjects,
+  },
+  {
+    getParentRoute: () => rootRoute,
+    path: "/profile",
+    component: Profile,
   },
   {
     getParentRoute: () => rootRoute,
