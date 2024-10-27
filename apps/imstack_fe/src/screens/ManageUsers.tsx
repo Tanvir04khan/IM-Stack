@@ -38,7 +38,7 @@ const ManageUsers = () => {
       email: "Test@test.com",
       joinedOn: "24-03-2024",
       onClick: function (item) {
-        navigation({ from: "/manageusers", to: `/manageusers/${item.userId}` });
+        navigation({ from: "/manageusers", to: `/profile/${item.userId}` });
       },
       userId: "test",
     },

@@ -136,7 +136,9 @@ const Header = ({ children }: HeaderPropsType) => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Tanvir Khan</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigation({ to: "/profile" })}>
+              <DropdownMenuItem
+                onClick={() => navigation({ to: "/profile/test" })}
+              >
                 Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator />

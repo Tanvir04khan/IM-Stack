@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS "Answers" (
 	"answer" text NOT NULL,
 	"answeredOn" timestamp DEFAULT now() NOT NULL,
 	"userId" uuid NOT NULL,
-	"questionId" uuid NOT NULL
+	"questionId" uuid NOT NULL,
+	"acceptedAsBest" boolean NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Comments" (
@@ -34,10 +35,7 @@ CREATE TABLE IF NOT EXISTS "Questions" (
 	"question" text NOT NULL,
 	"views" integer NOT NULL,
 	"askedOn" timestamp DEFAULT now() NOT NULL,
-	"userId" uuid NOT NULL,
-	"type" varchar(50) NOT NULL,
-	"projectId" uuid,
-	"technologyId" uuid
+	"userId" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Rewards" (
@@ -51,9 +49,24 @@ CREATE TABLE IF NOT EXISTS "Roles" (
 	"role" varchar(100) NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "Tags" (
+	"tagId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"type" varchar(50) NOT NULL,
+	"tagType" varchar(50) NOT NULL,
+	"projectId" uuid NOT NULL,
+	"questionId" uuid NOT NULL,
+	"technologyId" uuid NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Technologies" (
 	"technologyId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"technology" varchar(50) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "UserTechnologies" (
+	"userTechId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"userId" uuid NOT NULL,
+	"technologyId" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Users" (
@@ -61,18 +74,23 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"firstName" varchar(100) NOT NULL,
 	"lastName" varchar(100) NOT NULL,
 	"emailId" varchar(200) NOT NULL,
-	"password" text NOT NULL
+	"image" "bytea" NOT NULL,
+	"clerkUserId" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "UsersRoles" (
 	"usersRoleId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" uuid NOT NULL,
-	"roleId" uuid NOT NULL
+	"roleId" uuid NOT NULL,
+	"projectId" uuid
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Votes" (
 	"voteId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"vote" smallint,
+	"type" varchar(50) NOT NULL,
 	"answerId" uuid NOT NULL,
+	"questionId" uuid NOT NULL,
 	"userId" uuid NOT NULL
 );
 --> statement-breakpoint
@@ -125,19 +143,37 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "Questions" ADD CONSTRAINT "Questions_projectId_Projects_projectId_fk" FOREIGN KEY ("projectId") REFERENCES "public"."Projects"("projectId") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "Questions" ADD CONSTRAINT "Questions_technologyId_Technologies_technologyId_fk" FOREIGN KEY ("technologyId") REFERENCES "public"."Technologies"("technologyId") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "Rewards" ADD CONSTRAINT "Rewards_userId_Users_userId_fk" FOREIGN KEY ("userId") REFERENCES "public"."Users"("userId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "Tags" ADD CONSTRAINT "Tags_projectId_Projects_projectId_fk" FOREIGN KEY ("projectId") REFERENCES "public"."Projects"("projectId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "Tags" ADD CONSTRAINT "Tags_questionId_Questions_questionId_fk" FOREIGN KEY ("questionId") REFERENCES "public"."Questions"("questionId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "Tags" ADD CONSTRAINT "Tags_technologyId_Technologies_technologyId_fk" FOREIGN KEY ("technologyId") REFERENCES "public"."Technologies"("technologyId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "UserTechnologies" ADD CONSTRAINT "UserTechnologies_userId_Users_userId_fk" FOREIGN KEY ("userId") REFERENCES "public"."Users"("userId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "UserTechnologies" ADD CONSTRAINT "UserTechnologies_technologyId_Technologies_technologyId_fk" FOREIGN KEY ("technologyId") REFERENCES "public"."Technologies"("technologyId") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -155,7 +191,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "UsersRoles" ADD CONSTRAINT "UsersRoles_projectId_Projects_projectId_fk" FOREIGN KEY ("projectId") REFERENCES "public"."Projects"("projectId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "Votes" ADD CONSTRAINT "Votes_answerId_Answers_answerId_fk" FOREIGN KEY ("answerId") REFERENCES "public"."Answers"("answerId") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "Votes" ADD CONSTRAINT "Votes_questionId_Questions_questionId_fk" FOREIGN KEY ("questionId") REFERENCES "public"."Questions"("questionId") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

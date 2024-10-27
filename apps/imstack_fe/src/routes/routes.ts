@@ -49,7 +49,7 @@ export const routesWithCpmponent = [
   },
   {
     getParentRoute: () => rootRoute,
-    path: "/profile",
+    path: "/profile/$userId",
     component: Profile,
   },
   {

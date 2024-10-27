@@ -1,5 +1,5 @@
 {
-  "id": "76ff4241-6fdb-4527-960f-de2f8ea8c88c",
+  "id": "285f326d-fd11-48e1-b86f-f36ca2b56b78",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -37,6 +37,12 @@
         "questionId": {
           "name": "questionId",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "acceptedAsBest": {
+          "name": "acceptedAsBest",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true
         }
@@ -302,24 +308,6 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "projectId": {
-          "name": "projectId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "technologyId": {
-          "name": "technologyId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -335,32 +323,6 @@
             "userId"
           ],
           "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "Questions_projectId_Projects_projectId_fk": {
-          "name": "Questions_projectId_Projects_projectId_fk",
-          "tableFrom": "Questions",
-          "tableTo": "Projects",
-          "columnsFrom": [
-            "projectId"
-          ],
-          "columnsTo": [
-            "projectId"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "Questions_technologyId_Technologies_technologyId_fk": {
-          "name": "Questions_technologyId_Technologies_technologyId_fk",
-          "tableFrom": "Questions",
-          "tableTo": "Technologies",
-          "columnsFrom": [
-            "technologyId"
-          ],
-          "columnsTo": [
-            "technologyId"
-          ],
-          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -433,6 +395,93 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.Tags": {
+      "name": "Tags",
+      "schema": "",
+      "columns": {
+        "tagId": {
+          "name": "tagId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tagType": {
+          "name": "tagType",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "technologyId": {
+          "name": "technologyId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Tags_projectId_Projects_projectId_fk": {
+          "name": "Tags_projectId_Projects_projectId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "projectId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Tags_questionId_Questions_questionId_fk": {
+          "name": "Tags_questionId_Questions_questionId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Tags_technologyId_Technologies_technologyId_fk": {
+          "name": "Tags_technologyId_Technologies_technologyId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Technologies",
+          "columnsFrom": [
+            "technologyId"
+          ],
+          "columnsTo": [
+            "technologyId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.Technologies": {
       "name": "Technologies",
       "schema": "",
@@ -453,6 +502,62 @@
       },
       "indexes": {},
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.UserTechnologies": {
+      "name": "UserTechnologies",
+      "schema": "",
+      "columns": {
+        "userTechId": {
+          "name": "userTechId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "technologyId": {
+          "name": "technologyId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "UserTechnologies_userId_Users_userId_fk": {
+          "name": "UserTechnologies_userId_Users_userId_fk",
+          "tableFrom": "UserTechnologies",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "UserTechnologies_technologyId_Technologies_technologyId_fk": {
+          "name": "UserTechnologies_technologyId_Technologies_technologyId_fk",
+          "tableFrom": "UserTechnologies",
+          "tableTo": "Technologies",
+          "columnsFrom": [
+            "technologyId"
+          ],
+          "columnsTo": [
+            "technologyId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -485,8 +590,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "password": {
-          "name": "password",
+        "image": {
+          "name": "image",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "clerkUserId": {
+          "name": "clerkUserId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -519,6 +630,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -548,6 +665,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "UsersRoles_projectId_Projects_projectId_fk": {
+          "name": "UsersRoles_projectId_Projects_projectId_fk",
+          "tableFrom": "UsersRoles",
+          "tableTo": "Projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "projectId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -564,8 +694,26 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "vote": {
+          "name": "vote",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "answerId": {
           "name": "answerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -588,6 +736,19 @@
           ],
           "columnsTo": [
             "answerId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Votes_questionId_Questions_questionId_fk": {
+          "name": "Votes_questionId_Questions_questionId_fk",
+          "tableFrom": "Votes",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

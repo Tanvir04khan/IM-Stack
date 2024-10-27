@@ -1,9 +1,11 @@
 import { relations } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import {
+  boolean,
   customType,
   integer,
   pgTable,
+  smallint,
   text,
   timestamp,
   uuid,
@@ -21,7 +23,8 @@ export const Users = pgTable("Users", {
   firstName: varchar("firstName", { length: 100 }).notNull(),
   lastName: varchar("lastName", { length: 100 }).notNull(),
   emailId: varchar("emailId", { length: 200 }).notNull(),
-  password: text("password").notNull(),
+  image: customBytea("image").notNull(),
+  clerkUserID: text("clerkUserId").notNull(),
 });
 
 export const Projects = pgTable("Projects", {
@@ -57,15 +60,6 @@ export const Questions = pgTable("Questions", {
   userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
-  type: varchar("type", { length: 50 }).notNull(),
-  projectId: uuid("projectId").references(
-    (): AnyPgColumn => Projects.projectId,
-    { onDelete: "cascade" }
-  ),
-  technologyId: uuid("technologyId").references(
-    (): AnyPgColumn => Technologies.technologyId,
-    { onDelete: "cascade" }
-  ),
 });
 
 export const Answers = pgTable("Answers", {
@@ -77,6 +71,9 @@ export const Answers = pgTable("Answers", {
     .notNull(),
   questionId: uuid("questionId")
     .references((): AnyPgColumn => Questions.questionId)
+    .notNull(),
+  acceptedAsBest: boolean("acceptedAsBest")
+    .$default(() => false)
     .notNull(),
 });
 
@@ -98,8 +95,13 @@ export const Comments = pgTable("Comments", {
 
 export const Votes = pgTable("Votes", {
   voteId: uuid("voteId").defaultRandom().notNull().primaryKey(),
+  vote: smallint("vote"),
+  type: varchar("type", { length: 50 }).notNull(),
   answerId: uuid("answerId")
     .references((): AnyPgColumn => Answers.answerId)
+    .notNull(),
+  questionId: uuid("questionId")
+    .references((): AnyPgColumn => Questions.questionId)
     .notNull(),
   userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
@@ -127,6 +129,34 @@ export const UsersRoles = pgTable("UsersRoles", {
   roleId: uuid("roleId")
     .references((): AnyPgColumn => Roles.roleId)
     .notNull(),
+  projectId: uuid("projectId").references(
+    (): AnyPgColumn => Projects.projectId
+  ),
+});
+
+export const Tags = pgTable("Tags", {
+  tagId: uuid("tagId").defaultRandom().notNull().primaryKey(),
+  type: varchar("type", { length: 50 }).notNull(),
+  tagType: varchar("tagType", { length: 50 }).notNull(),
+  projectId: uuid("projectId")
+    .references((): AnyPgColumn => Projects.projectId)
+    .notNull(),
+  questionId: uuid("questionId")
+    .references((): AnyPgColumn => Questions.questionId)
+    .notNull(),
+  technologyId: uuid("technologyId")
+    .references((): AnyPgColumn => Technologies.technologyId)
+    .notNull(),
+});
+
+export const UserTechnologies = pgTable("UserTechnologies", {
+  userTechId: uuid("userTechId").defaultRandom().notNull().primaryKey(),
+  userId: uuid("userId")
+    .references((): AnyPgColumn => Users.userId)
+    .notNull(),
+  technologyId: uuid("technologyId")
+    .references((): AnyPgColumn => Technologies.technologyId)
+    .notNull(),
 });
 
 // relations
@@ -138,6 +168,7 @@ export const usersRelations = relations(Users, ({ one, many }) => ({
   Comments: many(Comments),
   UsersRoles: many(UsersRoles),
   Votes: many(Votes),
+  UserTechnologies: many(UserTechnologies),
   Rewards: one(Rewards, {
     fields: [Users.userId],
     references: [Rewards.rewardId],
@@ -147,6 +178,8 @@ export const usersRelations = relations(Users, ({ one, many }) => ({
 export const questionsRelations = relations(Questions, ({ many }) => ({
   Answers: many(Answers),
   Comments: many(Comments),
+  Votes: many(Votes),
+  Tags: many(Tags),
 }));
 
 export const answersRelations = relations(Answers, ({ one, many }) => ({
@@ -155,7 +188,8 @@ export const answersRelations = relations(Answers, ({ one, many }) => ({
 }));
 
 export const projectsRelations = relations(Projects, ({ many }) => ({
-  Questions: many(Questions),
+  Tags: many(Tags),
+  UsersRoles: many(UsersRoles),
 }));
 
 export const RolesRelations = relations(UsersRoles, ({ many }) => ({
@@ -163,5 +197,6 @@ export const RolesRelations = relations(UsersRoles, ({ many }) => ({
 }));
 
 export const TechnologiesRelations = relations(Technologies, ({ many }) => ({
-  Questions: many(Questions),
+  Tags: many(Tags),
+  UserTechnologies: many(UserTechnologies),
 }));

@@ -6,6 +6,12 @@ module.exports = {
     project: true,
   },
   rules: {
-    "@typescript-eslint/no-unsafe-assignment": "error",
+    "@typescript-eslint/no-unsafe-assignment": [
+      "error",
+      {
+        selector: "enumMember",
+        format: ["UPPER_CASE"],
+      },
+    ],
   },
 };
