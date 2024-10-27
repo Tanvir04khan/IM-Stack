@@ -23,7 +23,7 @@ export const Users = pgTable("Users", {
   firstName: varchar("firstName", { length: 100 }).notNull(),
   lastName: varchar("lastName", { length: 100 }).notNull(),
   emailId: varchar("emailId", { length: 200 }).notNull(),
-  image: customBytea("image").notNull(),
+  image: customBytea("image"),
   clerkUserID: text("clerkUserId").notNull(),
 });
 

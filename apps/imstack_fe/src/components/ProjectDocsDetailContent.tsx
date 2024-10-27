@@ -5,11 +5,13 @@ import CreateProjectContent from "./CreateProjectContent";
 type ProjectDocsDetailContentPropsType = {
   createUpdateDetails: InfoDisplayPropsType[];
   projectName: string;
-  selectedImage: string | null;
+  selectedImage: string | ArrayBuffer | null;
   editorContent: string;
   setProjectName: (value: string) => void;
-  handleImageChange: (val: string | null) => void;
+  handleImageChange: (val: string | ArrayBuffer | null) => void;
   handleContent: (newContent: string) => void;
+  setProjectSummary: (value: string) => void;
+  projectSummary: string;
   isEditable: boolean;
 };
 
@@ -21,6 +23,8 @@ const ProjectDocsDetailContent = ({
   handleContent,
   handleImageChange,
   setProjectName,
+  setProjectSummary,
+  projectSummary,
   isEditable,
 }: ProjectDocsDetailContentPropsType) => {
   return (
@@ -39,6 +43,8 @@ const ProjectDocsDetailContent = ({
             handleImageChange={handleImageChange}
             handleContent={handleContent}
             textEditorContent={editorContent}
+            projectSummary={projectSummary}
+            setProjectSummary={setProjectSummary}
           />
         ) : (
           <div className="w-full flex items-center justify-center mt-8">

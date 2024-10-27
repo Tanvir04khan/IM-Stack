@@ -8,14 +8,35 @@ import React, { useState } from "react";
 const CreateProjects = () => {
   const [content, setContent] = useState("");
   const [projectName, setProjectName] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [projectSummary, setProjectSummary] = useState("");
+  const [projectImage, setProjectImage] = useState<string | ArrayBuffer | null>(
+    null
+  );
 
   const handleContent = (newContent: string) => {
     setContent(newContent);
   };
 
-  const handleImageChange = (value: string | null) => {
-    setSelectedImage(value);
+  const handleImageChange = (value: string | ArrayBuffer | null) => {
+    setProjectImage(value);
+  };
+
+  const handleCreateProjectButton = async () => {
+    const response = await fetch("http://localhost:5001/create-projectdoc", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        projectName,
+        projectIcon: projectImage,
+        summary: projectSummary,
+        document: content,
+        createdBy: "1b764a45-b28a-4c38-b9d2-2c76c274fde2",
+        modifiedBy: "1b764a45-b28a-4c38-b9d2-2c76c274fde2",
+      }),
+    });
+    console.log(response);
   };
 
   return (
@@ -26,14 +47,16 @@ const CreateProjects = () => {
           <CreateProjectContent
             projectName={projectName}
             textEditorContent={content}
-            selectedImage={selectedImage}
+            selectedImage={projectImage}
             handleImageChange={handleImageChange}
             handleContent={handleContent}
             setProjectName={setProjectName}
+            setProjectSummary={setProjectSummary}
+            projectSummary={projectSummary}
           />
         }
         action={
-          <Button content="Create" onClick={() => console.log()}>
+          <Button content="Create" onClick={handleCreateProjectButton}>
             <FilePlus className="w-4 h-4" />
           </Button>
         }

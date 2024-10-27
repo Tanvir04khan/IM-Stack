@@ -11,10 +11,10 @@ projectDocsRouter.post(
   createProjectDoc as RequestHandler
 );
 
-projectDocsRouter.put("/get-projectdocs", getProjectDocs as RequestHandler);
+projectDocsRouter.get("/get-projectdocs", getProjectDocs as RequestHandler);
 
-projectDocsRouter.put(
-  "/get-projectdocdetails",
+projectDocsRouter.get(
+  "/get-projectdocdetails/:projectDocId",
   getProjectDocDetails as RequestHandler
 );
 

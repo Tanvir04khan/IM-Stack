@@ -21,4 +21,17 @@ export enum ErrorCode {
   INVALID_CREDS = "INVALID_CREDS",
 }
 
-export enum ErrorMessage {}
+export enum ErrorMessage {
+  INTERNAL_SERVER_ERROR = "Internal server error.",
+  SOMETHING_WENT_WRONG = "Something wnet wrong.",
+  ACTIVITIES_USERID = "Please provide valid userId.",
+  ACTIVITIES_USER = "User not found.",
+  PROJECT_POST_DETAILS = "Please provide valid project details.",
+  PROJECT_DETAILS = "Please provide valid projectDocId.",
+}
+
+export enum SuccesMessage {
+  ACTIVITIES = "Activities data found.",
+  PROJECT_DOCS_CREATE = "Project documents added successfully.",
+  PROJECT_DOC_DETAILS = "Project document detail found.",
+}

@@ -6,10 +6,12 @@ import TextEditor from "./TextEditor";
 import CircularImageUpload from "./ImageInput";
 
 type CreateProjectContentPropsType = {
-  selectedImage: string | null;
-  handleImageChange: (value: string | null) => void;
+  selectedImage: string | ArrayBuffer | null;
+  handleImageChange: (value: string | ArrayBuffer | null) => void;
   projectName: string;
   setProjectName: (value: string) => void;
+  setProjectSummary: (value: string) => void;
+  projectSummary: string;
   textEditorContent: string;
   handleContent: (newContent: string) => void;
 };
@@ -18,8 +20,10 @@ const CreateProjectContent = ({
   projectName,
   selectedImage,
   textEditorContent,
+  projectSummary,
   handleImageChange,
   setProjectName,
+  setProjectSummary,
   handleContent,
 }: CreateProjectContentPropsType) => {
   return (
@@ -42,7 +46,12 @@ const CreateProjectContent = ({
         </div>
         <div className="flex flex-col gap-2">
           <Label>Project Summary</Label>
-          <Textarea className="h-20" placeholder="Project Summary..." />
+          <Textarea
+            className="h-20"
+            placeholder="Project Summary..."
+            value={projectSummary}
+            onChange={(e) => setProjectSummary(e.target.value)}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-2">

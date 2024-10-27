@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import Header from "@/components/Header";
 import ProjectTitle from "@/components/ProjectTitle";
@@ -51,7 +51,10 @@ const ProjectDocsDetail = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [projectName, setProjectName] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>("");
+  const [projectSummary, setProjectSummary] = useState("");
+  const [selectedImage, setSelectedImage] = useState<
+    string | ArrayBuffer | null
+  >("");
 
   const handleContent = (content: string) => {
     setEditorContent(content);
@@ -67,9 +70,32 @@ const ProjectDocsDetail = () => {
   const handleProjectName = (value: string) => {
     setProjectName(value);
   };
-  const handleImageChange = (value: string | null) => {
+  const handleImageChange = (value: string | ArrayBuffer | null) => {
     setSelectedImage(value);
   };
+
+  const getProjectDocDetails = async () => {
+    const resultJSON = await fetch(
+      `http://localhost:5001/get-projectdocdetails/${projectdocsId}`
+    );
+    const result = await resultJSON.json();
+
+    const buffer = result.data[0].document;
+    const iconBuffer = result.data[0].icon;
+    // Step 2: Convert the buffer to a UTF-8 string
+    const htmlString = buffer.data
+      .map((data: number) => String.fromCharCode(data))
+      .join("");
+    const icon = iconBuffer.data
+      .map((data: number) => String.fromCharCode(data))
+      .join("");
+    setSelectedImage(icon);
+    console.log(setEditorContent(htmlString));
+  };
+
+  useEffect(() => {
+    getProjectDocDetails();
+  }, []);
 
   return (
     <Header>
@@ -97,6 +123,8 @@ const ProjectDocsDetail = () => {
             handleContent={handleContent}
             handleImageChange={handleImageChange}
             setProjectName={handleProjectName}
+            projectSummary={projectSummary}
+            setProjectSummary={setProjectSummary}
           />
         }
       />

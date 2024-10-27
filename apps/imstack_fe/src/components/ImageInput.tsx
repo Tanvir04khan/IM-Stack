@@ -5,8 +5,8 @@ import { ImageIcon } from "lucide-react"; // Importing the icon from Lucide
 import { Label } from "./ui/label";
 
 type CircularImageUploadPropsType = {
-  value: string | null;
-  setImage: (value: string | null) => void;
+  value: string | ArrayBuffer | null;
+  setImage: (value: string | ArrayBuffer | null) => void;
   lable: string;
 };
 
@@ -17,9 +17,14 @@ const CircularImageUpload = ({
 }: CircularImageUploadPropsType) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImage(reader.result); // This will contain the Base64 string of the image
+    };
+
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl); // Set the selected image to the state
+      reader.readAsDataURL(file);
     }
   };
 
@@ -33,7 +38,7 @@ const CircularImageUpload = ({
         <div className="w-20 h-20 rounded-full border border-gray-300 flex justify-center items-center overflow-hidden">
           {value ? (
             <img
-              src={value}
+              src={typeof value === "string" ? value : ""}
               alt="Uploaded"
               className="object-cover w-full h-full"
             />
