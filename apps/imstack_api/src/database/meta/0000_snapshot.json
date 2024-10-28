@@ -1,5 +1,5 @@
 {
-  "id": "285f326d-fd11-48e1-b86f-f36ca2b56b78",
+  "id": "6e145692-f159-4e6c-ba5e-d21b2dbeda30",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -224,13 +224,19 @@
         },
         "document": {
           "name": "document",
-          "type": "bytea",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "icon": {
           "name": "icon",
           "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iconType": {
+          "name": "iconType",
+          "type": "varchar(200)",
           "primaryKey": false,
           "notNull": true
         }
@@ -594,13 +600,19 @@
           "name": "image",
           "type": "bytea",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "clerkUserId": {
           "name": "clerkUserId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "imageType": {
+          "name": "imageType",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

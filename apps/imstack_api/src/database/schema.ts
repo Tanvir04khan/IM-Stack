@@ -25,6 +25,7 @@ export const Users = pgTable("Users", {
   emailId: varchar("emailId", { length: 200 }).notNull(),
   image: customBytea("image"),
   clerkUserID: text("clerkUserId").notNull(),
+  imageType: varchar("imageType", { length: 200 }),
 });
 
 export const Projects = pgTable("Projects", {
@@ -42,8 +43,9 @@ export const Projects = pgTable("Projects", {
     .defaultNow()
     .$onUpdate(() => new Date()),
   summary: text("summary").notNull(),
-  document: customBytea("document").notNull(),
+  document: text("document").notNull(),
   icon: customBytea("icon").notNull(),
+  iconType: varchar("iconType", { length: 200 }).notNull(),
 });
 
 export const Technologies = pgTable("Technologies", {

@@ -34,16 +34,16 @@ const createProjectDoc = async (
       );
     }
 
-    const icon = Buffer.from(
-      projectIcon.replace(/^data:image\/\w+;base64,/, ""),
-      "base64"
-    );
+    const projectIconArray = projectIcon.split(",");
+
+    const icon = Buffer.from(projectIconArray[1], "base64");
 
     const result = await database
       .insert(Projects)
       .values({
         projectName,
         icon,
+        iconType: projectIconArray[0],
         summary,
         document,
         createdBy,

@@ -20,7 +20,7 @@ const projects: {
   {
     image: imstackLogo,
     name: " IM Stack",
-    id: "d473858b-9f62-40c9-a54b-1e7d9faf6f9c",
+    id: "0d00c078-afba-4825-bbab-c9499817c25c",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...",
     technologies: ["React JS", "Java Script", "CRM", "Dot Net"],

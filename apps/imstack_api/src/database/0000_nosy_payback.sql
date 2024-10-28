@@ -25,8 +25,9 @@ CREATE TABLE IF NOT EXISTS "Projects" (
 	"modifiedBy" uuid NOT NULL,
 	"modifiedOn" timestamp DEFAULT now() NOT NULL,
 	"summary" text NOT NULL,
-	"document" "bytea" NOT NULL,
-	"icon" "bytea" NOT NULL
+	"document" text NOT NULL,
+	"icon" "bytea" NOT NULL,
+	"iconType" varchar(200) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Questions" (
@@ -74,8 +75,9 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"firstName" varchar(100) NOT NULL,
 	"lastName" varchar(100) NOT NULL,
 	"emailId" varchar(200) NOT NULL,
-	"image" "bytea" NOT NULL,
-	"clerkUserId" text NOT NULL
+	"image" "bytea",
+	"clerkUserId" text NOT NULL,
+	"imageType" varchar(200)
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "UsersRoles" (

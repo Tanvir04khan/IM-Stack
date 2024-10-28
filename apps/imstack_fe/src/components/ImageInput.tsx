@@ -40,7 +40,7 @@ const CircularImageUpload = ({
             <img
               src={typeof value === "string" ? value : ""}
               alt="Uploaded"
-              className="object-cover w-full h-full"
+              className="w-full h-full rounded-full"
             />
           ) : (
             <ImageIcon className="w-8 h-8 text-gray-500" />

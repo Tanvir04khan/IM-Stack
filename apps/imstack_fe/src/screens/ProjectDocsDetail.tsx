@@ -80,17 +80,8 @@ const ProjectDocsDetail = () => {
     );
     const result = await resultJSON.json();
 
-    const buffer = result.data[0].document;
-    const iconBuffer = result.data[0].icon;
-    // Step 2: Convert the buffer to a UTF-8 string
-    const htmlString = buffer.data
-      .map((data: number) => String.fromCharCode(data))
-      .join("");
-    const icon = iconBuffer.data
-      .map((data: number) => String.fromCharCode(data))
-      .join("");
-    setSelectedImage(icon);
-    console.log(setEditorContent(htmlString));
+    setSelectedImage(result.data.icon);
+    console.log(setEditorContent(result.data.document));
   };
 
   useEffect(() => {

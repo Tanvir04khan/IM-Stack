@@ -31,10 +31,13 @@ const getProjectDocDetails = async (
       .from(Projects)
       .where(eq(Projects.projectId, projectDocId));
 
+    let icon = projectDocDetails[0].icon.toString("base64");
+    icon = projectDocDetails[0].iconType + "," + icon;
+
     return res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOC_DETAILS,
-      data: projectDocDetails,
+      data: { ...projectDocDetails[0], icon },
     });
   } catch (error) {
     next(error);
