@@ -8,28 +8,35 @@ import {
   SuccesMessage,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Projects } from "../../database/schema";
-import { log } from "@repo/logger";
+import { Projects, Users } from "../../database/schema";
+import { eq } from "drizzle-orm";
 
 const createProjectDoc = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { projectName, summary, projectIcon, document, createdBy, modifiedBy } =
-    req.body;
+  const { projectName, summary, projectIcon, document } = req.body;
+  const { userId } = req.params;
   try {
-    if (
-      !projectName ||
-      !summary ||
-      !projectIcon ||
-      !document ||
-      !createdBy ||
-      !modifiedBy
-    ) {
+    if (!projectName || !summary || !projectIcon || !document || !userId) {
       throw new NodeError(
         ErrorMessage.PROJECT_POST_DETAILS,
         APIStatusCode.BAD_REQUEST,
+        ErrorCode.INVALID_DATA
+      );
+    }
+
+    const user = await database
+      .select()
+      .from(Users)
+      .where(eq(Users.userId, userId))
+      .limit(1);
+
+    if (!user.length) {
+      throw new NodeError(
+        ErrorMessage.ACTIVITIES_USER,
+        APIStatusCode.NOT_FOUND,
         ErrorCode.INVALID_DATA
       );
     }
@@ -46,8 +53,8 @@ const createProjectDoc = async (
         iconType: projectIconArray[0],
         summary,
         document,
-        createdBy,
-        modifiedBy,
+        createdBy: userId,
+        modifiedBy: userId,
       })
       .returning();
 

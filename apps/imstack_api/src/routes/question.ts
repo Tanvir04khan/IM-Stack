@@ -6,7 +6,7 @@ import updateQuestion from "../controller/question/updateQuestion";
 
 const questionRouter = Router();
 
-questionRouter.post("/add-question", addQuestion as RequestHandler);
+questionRouter.post("/add-question/:userId", addQuestion as RequestHandler);
 
 questionRouter.get("/get-question", getQuestions as RequestHandler);
 

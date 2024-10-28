@@ -7,11 +7,14 @@ import getProjectDocDetails from "../controller/projectDocs/getProjectDocDetails
 const projectDocsRouter = Router();
 
 projectDocsRouter.post(
-  "/create-projectdoc",
+  "/create-projectdoc/:userId",
   createProjectDoc as RequestHandler
 );
 
-projectDocsRouter.get("/get-projectdocs", getProjectDocs as RequestHandler);
+projectDocsRouter.get(
+  "/get-projectdocs/:userId",
+  getProjectDocs as RequestHandler
+);
 
 projectDocsRouter.get(
   "/get-projectdocdetails/:projectDocId",
@@ -19,7 +22,7 @@ projectDocsRouter.get(
 );
 
 projectDocsRouter.put(
-  "/update-projectdocs",
+  "/update-projectdoc/:userId",
   updateProjectDoc as RequestHandler
 );
 

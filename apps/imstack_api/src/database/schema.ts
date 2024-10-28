@@ -140,15 +140,15 @@ export const Tags = pgTable("Tags", {
   tagId: uuid("tagId").defaultRandom().notNull().primaryKey(),
   type: varchar("type", { length: 50 }).notNull(),
   tagType: varchar("tagType", { length: 50 }).notNull(),
-  projectId: uuid("projectId")
-    .references((): AnyPgColumn => Projects.projectId)
-    .notNull(),
-  questionId: uuid("questionId")
-    .references((): AnyPgColumn => Questions.questionId)
-    .notNull(),
-  technologyId: uuid("technologyId")
-    .references((): AnyPgColumn => Technologies.technologyId)
-    .notNull(),
+  projectId: uuid("projectId").references(
+    (): AnyPgColumn => Projects.projectId
+  ),
+  questionId: uuid("questionId").references(
+    (): AnyPgColumn => Questions.questionId
+  ),
+  technologyId: uuid("technologyId").references(
+    (): AnyPgColumn => Technologies.technologyId
+  ),
 });
 
 export const UserTechnologies = pgTable("UserTechnologies", {

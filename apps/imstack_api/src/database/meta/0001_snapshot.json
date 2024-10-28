@@ -1,0 +1,794 @@
+{
+  "id": "5fd2bac2-7bc8-40ec-af04-1c0e11324da6",
+  "prevId": "6e145692-f159-4e6c-ba5e-d21b2dbeda30",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.Answers": {
+      "name": "Answers",
+      "schema": "",
+      "columns": {
+        "answerId": {
+          "name": "answerId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "answer": {
+          "name": "answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answeredOn": {
+          "name": "answeredOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "acceptedAsBest": {
+          "name": "acceptedAsBest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Answers_userId_Users_userId_fk": {
+          "name": "Answers_userId_Users_userId_fk",
+          "tableFrom": "Answers",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Answers_questionId_Questions_questionId_fk": {
+          "name": "Answers_questionId_Questions_questionId_fk",
+          "tableFrom": "Answers",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Comments": {
+      "name": "Comments",
+      "schema": "",
+      "columns": {
+        "commentId": {
+          "name": "commentId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "commentedOn": {
+          "name": "commentedOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answerId": {
+          "name": "answerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Comments_userId_Users_userId_fk": {
+          "name": "Comments_userId_Users_userId_fk",
+          "tableFrom": "Comments",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Comments_questionId_Questions_questionId_fk": {
+          "name": "Comments_questionId_Questions_questionId_fk",
+          "tableFrom": "Comments",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Comments_answerId_Answers_answerId_fk": {
+          "name": "Comments_answerId_Answers_answerId_fk",
+          "tableFrom": "Comments",
+          "tableTo": "Answers",
+          "columnsFrom": [
+            "answerId"
+          ],
+          "columnsTo": [
+            "answerId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Projects": {
+      "name": "Projects",
+      "schema": "",
+      "columns": {
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "projectName": {
+          "name": "projectName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdOn": {
+          "name": "createdOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "modifiedBy": {
+          "name": "modifiedBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "modifiedOn": {
+          "name": "modifiedOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "document": {
+          "name": "document",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "name": "icon",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iconType": {
+          "name": "iconType",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Projects_createdBy_Users_userId_fk": {
+          "name": "Projects_createdBy_Users_userId_fk",
+          "tableFrom": "Projects",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "createdBy"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Projects_modifiedBy_Users_userId_fk": {
+          "name": "Projects_modifiedBy_Users_userId_fk",
+          "tableFrom": "Projects",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "modifiedBy"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Questions": {
+      "name": "Questions",
+      "schema": "",
+      "columns": {
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "question": {
+          "name": "question",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "views": {
+          "name": "views",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "askedOn": {
+          "name": "askedOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Questions_userId_Users_userId_fk": {
+          "name": "Questions_userId_Users_userId_fk",
+          "tableFrom": "Questions",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Rewards": {
+      "name": "Rewards",
+      "schema": "",
+      "columns": {
+        "rewardId": {
+          "name": "rewardId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Rewards_userId_Users_userId_fk": {
+          "name": "Rewards_userId_Users_userId_fk",
+          "tableFrom": "Rewards",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Roles": {
+      "name": "Roles",
+      "schema": "",
+      "columns": {
+        "roleId": {
+          "name": "roleId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Tags": {
+      "name": "Tags",
+      "schema": "",
+      "columns": {
+        "tagId": {
+          "name": "tagId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tagType": {
+          "name": "tagType",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "technologyId": {
+          "name": "technologyId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Tags_projectId_Projects_projectId_fk": {
+          "name": "Tags_projectId_Projects_projectId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "projectId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Tags_questionId_Questions_questionId_fk": {
+          "name": "Tags_questionId_Questions_questionId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Tags_technologyId_Technologies_technologyId_fk": {
+          "name": "Tags_technologyId_Technologies_technologyId_fk",
+          "tableFrom": "Tags",
+          "tableTo": "Technologies",
+          "columnsFrom": [
+            "technologyId"
+          ],
+          "columnsTo": [
+            "technologyId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Technologies": {
+      "name": "Technologies",
+      "schema": "",
+      "columns": {
+        "technologyId": {
+          "name": "technologyId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "technology": {
+          "name": "technology",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.UserTechnologies": {
+      "name": "UserTechnologies",
+      "schema": "",
+      "columns": {
+        "userTechId": {
+          "name": "userTechId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "technologyId": {
+          "name": "technologyId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "UserTechnologies_userId_Users_userId_fk": {
+          "name": "UserTechnologies_userId_Users_userId_fk",
+          "tableFrom": "UserTechnologies",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "UserTechnologies_technologyId_Technologies_technologyId_fk": {
+          "name": "UserTechnologies_technologyId_Technologies_technologyId_fk",
+          "tableFrom": "UserTechnologies",
+          "tableTo": "Technologies",
+          "columnsFrom": [
+            "technologyId"
+          ],
+          "columnsTo": [
+            "technologyId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Users": {
+      "name": "Users",
+      "schema": "",
+      "columns": {
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailId": {
+          "name": "emailId",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image": {
+          "name": "image",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "clerkUserId": {
+          "name": "clerkUserId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "imageType": {
+          "name": "imageType",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.UsersRoles": {
+      "name": "UsersRoles",
+      "schema": "",
+      "columns": {
+        "usersRoleId": {
+          "name": "usersRoleId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "UsersRoles_userId_Users_userId_fk": {
+          "name": "UsersRoles_userId_Users_userId_fk",
+          "tableFrom": "UsersRoles",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "UsersRoles_roleId_Roles_roleId_fk": {
+          "name": "UsersRoles_roleId_Roles_roleId_fk",
+          "tableFrom": "UsersRoles",
+          "tableTo": "Roles",
+          "columnsFrom": [
+            "roleId"
+          ],
+          "columnsTo": [
+            "roleId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "UsersRoles_projectId_Projects_projectId_fk": {
+          "name": "UsersRoles_projectId_Projects_projectId_fk",
+          "tableFrom": "UsersRoles",
+          "tableTo": "Projects",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "projectId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.Votes": {
+      "name": "Votes",
+      "schema": "",
+      "columns": {
+        "voteId": {
+          "name": "voteId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "vote": {
+          "name": "vote",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answerId": {
+          "name": "answerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "questionId": {
+          "name": "questionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Votes_answerId_Answers_answerId_fk": {
+          "name": "Votes_answerId_Answers_answerId_fk",
+          "tableFrom": "Votes",
+          "tableTo": "Answers",
+          "columnsFrom": [
+            "answerId"
+          ],
+          "columnsTo": [
+            "answerId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Votes_questionId_Questions_questionId_fk": {
+          "name": "Votes_questionId_Questions_questionId_fk",
+          "tableFrom": "Votes",
+          "tableTo": "Questions",
+          "columnsFrom": [
+            "questionId"
+          ],
+          "columnsTo": [
+            "questionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Votes_userId_Users_userId_fk": {
+          "name": "Votes_userId_Users_userId_fk",
+          "tableFrom": "Votes",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

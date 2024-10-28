@@ -10,7 +10,6 @@ import {
   SuccesMessage,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { getUserQuery } from "../../utils/queries";
 import { Projects, Questions, Users } from "../../database/schema";
 import { count, eq } from "drizzle-orm";
 
@@ -19,11 +18,11 @@ const getActivities = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   try {
     if (!userId) {
       throw new NodeError(
-        ErrorMessage.ACTIVITIES_USERID,
+        ErrorMessage.USERID,
         APIStatusCode.BAD_REQUEST,
         ErrorCode.INVALID_DATA
       );
@@ -51,17 +50,17 @@ const getActivities = async (
     const questions = await database
       .select({ count: count() })
       .from(Questions)
-      .where(eq(userId, Questions.userId));
+      .where(eq(Questions.userId, userId));
 
     const votes = await database
       .select({ count: count() })
       .from(Votes)
-      .where(eq(userId, Votes.userId));
+      .where(eq(Votes.userId, userId));
 
     const answers = await database
       .select({ count: count() })
       .from(Answers)
-      .where(eq(userId, Answers.userId));
+      .where(eq(Answers.userId, userId));
 
     return res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,

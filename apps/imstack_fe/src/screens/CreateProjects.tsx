@@ -22,20 +22,21 @@ const CreateProjects = () => {
   };
 
   const handleCreateProjectButton = async () => {
-    const response = await fetch("http://localhost:5001/create-projectdoc", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectName,
-        projectIcon: projectImage,
-        summary: projectSummary,
-        document: content,
-        createdBy: "9013abd1-630d-44fc-8916-ed1ff5d8db81",
-        modifiedBy: "9013abd1-630d-44fc-8916-ed1ff5d8db81",
-      }),
-    });
+    const response = await fetch(
+      "http://localhost:5001/create-projectdoc/9013abd1-630d-44fc-8916-ed1ff5d8db81",
+      {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          projectName,
+          projectIcon: projectImage,
+          summary: projectSummary,
+          document: content,
+        }),
+      }
+    );
     console.log(response);
   };
 

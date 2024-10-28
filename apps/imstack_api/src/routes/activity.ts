@@ -3,6 +3,6 @@ import getActivities from "../controller/activity/getActivities";
 
 const activityRoter = Router();
 
-activityRoter.get("/get-activities", getActivities as RequestHandler);
+activityRoter.get("/get-activities/:userId", getActivities as RequestHandler);
 
 export default activityRoter;

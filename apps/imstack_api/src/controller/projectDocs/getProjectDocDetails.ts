@@ -31,6 +31,14 @@ const getProjectDocDetails = async (
       .from(Projects)
       .where(eq(Projects.projectId, projectDocId));
 
+    if (!projectDocDetails.length) {
+      throw new NodeError(
+        ErrorMessage.NO_DATA_FOUND,
+        APIStatusCode.NOT_FOUND,
+        ErrorCode.NO_DATA_FOUND
+      );
+    }
+
     let icon = projectDocDetails[0].icon.toString("base64");
     icon = projectDocDetails[0].iconType + "," + icon;
 

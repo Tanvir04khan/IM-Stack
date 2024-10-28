@@ -1,0 +1,1 @@
+ALTER TABLE "Tags" ALTER COLUMN "projectId" DROP NOT NULL;
