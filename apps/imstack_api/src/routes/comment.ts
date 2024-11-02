@@ -4,8 +4,11 @@ import deleteComment from "../controller/comment/deleteComment";
 
 const commentRouter = Router();
 
-commentRouter.post("/add-comment", addComment as RequestHandler);
+commentRouter.post("/add-comment/:userId", addComment as RequestHandler);
 
-commentRouter.delete("/delete-comment", deleteComment as RequestHandler);
+commentRouter.delete(
+  "/delete-comment/:userId",
+  deleteComment as RequestHandler
+);
 
 export default commentRouter;

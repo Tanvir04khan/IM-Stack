@@ -11,6 +11,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { User } from "lucide-react";
 
 const customBytea = customType<{ data: Buffer }>({
   dataType() {
@@ -87,24 +88,20 @@ export const Comments = pgTable("Comments", {
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
   type: varchar("type", { length: 50 }).notNull(),
-  questionId: uuid("questionId")
-    .references((): AnyPgColumn => Questions.questionId)
-    .notNull(),
-  answerId: uuid("answerId")
-    .references((): AnyPgColumn => Answers.answerId)
-    .notNull(),
+  questionId: uuid("questionId").references(
+    (): AnyPgColumn => Questions.questionId
+  ),
+  answerId: uuid("answerId").references((): AnyPgColumn => Answers.answerId),
 });
 
 export const Votes = pgTable("Votes", {
   voteId: uuid("voteId").defaultRandom().notNull().primaryKey(),
   vote: smallint("vote"),
   type: varchar("type", { length: 50 }).notNull(),
-  answerId: uuid("answerId")
-    .references((): AnyPgColumn => Answers.answerId)
-    .notNull(),
-  questionId: uuid("questionId")
-    .references((): AnyPgColumn => Questions.questionId)
-    .notNull(),
+  answerId: uuid("answerId").references((): AnyPgColumn => Answers.answerId),
+  questionId: uuid("questionId").references(
+    (): AnyPgColumn => Questions.questionId
+  ),
   userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
@@ -177,24 +174,34 @@ export const usersRelations = relations(Users, ({ one, many }) => ({
   }),
 }));
 
-export const questionsRelations = relations(Questions, ({ many }) => ({
+export const questionsRelations = relations(Questions, ({ many, one }) => ({
   Answers: many(Answers),
   Comments: many(Comments),
   Votes: many(Votes),
   Tags: many(Tags),
+  Users: one(Users, { fields: [Questions.userId], references: [Users.userId] }),
 }));
 
 export const answersRelations = relations(Answers, ({ one, many }) => ({
   Comments: many(Comments),
-  Votes: one(Votes, { fields: [Answers.answerId], references: [Votes.voteId] }),
+  Votes: many(Votes),
+  Questions: one(Questions, {
+    fields: [Answers.questionId],
+    references: [Questions.questionId],
+  }),
+  Users: one(Users, { fields: [Answers.userId], references: [Users.userId] }),
 }));
 
-export const projectsRelations = relations(Projects, ({ many }) => ({
+export const projectsRelations = relations(Projects, ({ many, one }) => ({
   Tags: many(Tags),
   UsersRoles: many(UsersRoles),
+  Users: one(Users, {
+    fields: [Projects.createdBy],
+    references: [Users.userId],
+  }),
 }));
 
-export const RolesRelations = relations(UsersRoles, ({ many }) => ({
+export const RolesRelations = relations(Roles, ({ many }) => ({
   UsersRoles: many(UsersRoles),
 }));
 
@@ -202,3 +209,70 @@ export const TechnologiesRelations = relations(Technologies, ({ many }) => ({
   Tags: many(Tags),
   UserTechnologies: many(UserTechnologies),
 }));
+
+export const TagsRelations = relations(Tags, ({ one }) => ({
+  Questions: one(Questions, {
+    fields: [Tags.questionId],
+    references: [Questions.questionId],
+  }),
+  Technologies: one(Technologies, {
+    fields: [Tags.technologyId],
+    references: [Technologies.technologyId],
+  }),
+  Projects: one(Projects, {
+    fields: [Tags.projectId],
+    references: [Projects.projectId],
+  }),
+}));
+
+export const CommentsRelations = relations(Comments, ({ one }) => ({
+  Answers: one(Answers, {
+    fields: [Comments.answerId],
+    references: [Answers.answerId],
+  }),
+  Questions: one(Questions, {
+    fields: [Comments.questionId],
+    references: [Questions.questionId],
+  }),
+  User: one(Users, { fields: [Comments.userId], references: [Users.userId] }),
+}));
+
+export const VotesRelations = relations(Votes, ({ one }) => ({
+  Answers: one(Answers, {
+    fields: [Votes.answerId],
+    references: [Answers.answerId],
+  }),
+  Questions: one(Questions, {
+    fields: [Votes.questionId],
+    references: [Questions.questionId],
+  }),
+}));
+
+export const UsersRolesRelations = relations(UsersRoles, ({ one }) => ({
+  Users: one(Users, {
+    fields: [UsersRoles.userId],
+    references: [Users.userId],
+  }),
+  Roles: one(Roles, {
+    fields: [UsersRoles.roleId],
+    references: [Roles.roleId],
+  }),
+  Projects: one(Projects, {
+    fields: [UsersRoles.projectId],
+    references: [Projects.projectId],
+  }),
+}));
+
+export const UserTechnologiesRelations = relations(
+  UserTechnologies,
+  ({ one }) => ({
+    Users: one(Users, {
+      fields: [UserTechnologies.userId],
+      references: [Users.userId],
+    }),
+    Technologies: one(Technologies, {
+      fields: [UserTechnologies.technologyId],
+      references: [Technologies.technologyId],
+    }),
+  })
+);

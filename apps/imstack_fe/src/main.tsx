@@ -5,7 +5,6 @@ import "./index.css";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { ThemeProvider } from "./components/theme/theme-provider";
 import { router } from "./routes/routes";
-import Header from "./components/Header";
 
 const el = document.getElementById("root");
 

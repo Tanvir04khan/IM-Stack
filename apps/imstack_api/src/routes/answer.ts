@@ -4,8 +4,8 @@ import updateAnswer from "../controller/answer/updateAnswer";
 
 const answerRouter = Router();
 
-answerRouter.post("/add-answer", addAnswer as RequestHandler);
+answerRouter.post("/add-answer/:userId", addAnswer as RequestHandler);
 
-answerRouter.put("/update-answer", updateAnswer as RequestHandler);
+answerRouter.put("/update-answer/:userId", updateAnswer as RequestHandler);
 
 export default answerRouter;

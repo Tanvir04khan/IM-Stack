@@ -8,9 +8,9 @@ const userRouter = Router();
 
 userRouter.post("/add-users", addUser as RequestHandler);
 
-userRouter.get("/get-users", getUsers as RequestHandler);
+userRouter.get("/get-users/:userId", getUsers as RequestHandler);
 
-userRouter.get("/get-userdetails", getUserDetails as RequestHandler);
+userRouter.get("/get-userdetails/:userId", getUserDetails as RequestHandler);
 
 userRouter.put("/update-userdetails", updateUserDetails as RequestHandler);
 

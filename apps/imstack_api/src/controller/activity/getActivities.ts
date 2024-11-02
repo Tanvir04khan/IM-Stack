@@ -1,5 +1,4 @@
 import { Answers, Votes } from "./../../database/schema";
-import { log } from "console";
 import { NextFunction, Request, Response } from "express";
 import NodeError from "../../utils/NodeError";
 import {

@@ -5,12 +5,14 @@ import {
   ErrorCode,
   ErrorMessage,
   ResponseStatus,
+  Score,
   SuccesMessage,
   TagsTagType,
   TagsType,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Questions, Tags } from "../../database/schema";
+import { Questions, Rewards, Tags, Users } from "../../database/schema";
+import { eq, sql } from "drizzle-orm";
 
 const addQuestion = async (req: Request, res: Response, next: NextFunction) => {
   const { title, technologyTags, projectTags, question } = req.body;
@@ -18,8 +20,20 @@ const addQuestion = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!title || !question || !userId) {
       throw new NodeError(
-        ErrorMessage.PROJECT_POST_DETAILS,
+        ErrorMessage.QUESTION_ADD_DETAILS,
         APIStatusCode.BAD_REQUEST,
+        ErrorCode.INVALID_DATA
+      );
+    }
+
+    const user = await database.query.Users.findFirst({
+      where: (Users, { inArray }) => inArray(Users.userId, [userId]),
+    });
+
+    if (!user) {
+      throw new NodeError(
+        ErrorMessage.ACTIVITIES_USER,
+        APIStatusCode.NOT_FOUND,
         ErrorCode.INVALID_DATA
       );
     }
@@ -42,6 +56,13 @@ const addQuestion = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
+    await database
+      .update(Rewards)
+      .set({
+        score: sql`${Rewards.score} + ${Score.ADD_QUESTION}`,
+      })
+      .where(eq(Rewards.userId, userId));
+
     const questionId = questionInsertResult[0].questionId;
 
     for (const techTag of technologyTags) {
@@ -61,7 +82,7 @@ const addQuestion = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    res.status(APIStatusCode.OK).json({
+    res.status(APIStatusCode.CREATED).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.ADD_QUESTION,
       data: { questionId },

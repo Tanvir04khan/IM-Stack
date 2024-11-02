@@ -18,6 +18,7 @@ import { navItems } from "@/utilts";
 import { cn } from "@/lib/utils";
 import ProjectTitle from "./ProjectTitle";
 import imstackImage from "../images/IMSTACKLOGO.png";
+import Spinner from "./Spinner";
 
 type HeaderPropsType = {
   children: ReactNode;
@@ -39,7 +40,8 @@ const Header = ({ children }: HeaderPropsType) => {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-50">
+      {/* <Spinner /> */}
+      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-40">
         <nav className="hidden flex-col gap-6 text-lg font-medium lg:flex lg:flex-row lg:items-center lg:text-sm lg:gap-6">
           <Link
             href="#"

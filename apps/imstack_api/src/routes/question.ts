@@ -8,13 +8,16 @@ const questionRouter = Router();
 
 questionRouter.post("/add-question/:userId", addQuestion as RequestHandler);
 
-questionRouter.get("/get-question", getQuestions as RequestHandler);
+questionRouter.get("/get-questions/:userId", getQuestions as RequestHandler);
 
 questionRouter.get(
-  "/get-questiondetails",
+  "/get-questiondetails/:questionId",
   getQuestionDetails as RequestHandler
 );
 
-questionRouter.put("update-question", updateQuestion as RequestHandler);
+questionRouter.put(
+  "/update-question/:userId",
+  updateQuestion as RequestHandler
+);
 
 export default questionRouter;

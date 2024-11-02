@@ -5,11 +5,13 @@ import {
   ErrorCode,
   ErrorMessage,
   ResponseStatus,
+  Score,
   SuccesMessage,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Projects, Users } from "../../database/schema";
-import { eq } from "drizzle-orm";
+import { Projects, Rewards, Users, UsersRoles } from "../../database/schema";
+import { eq, sql } from "drizzle-orm";
+import { Roles as uRoles } from "../../utils/enums";
 
 const createProjectDoc = async (
   req: Request,
@@ -58,6 +60,16 @@ const createProjectDoc = async (
       })
       .returning();
 
+    const writeRole = await database.query.Roles.findFirst({
+      where: (Roles, { inArray }) => inArray(Roles.role, [uRoles.WRITE]),
+    });
+
+    await database.insert(UsersRoles).values({
+      roleId: writeRole ? writeRole.roleId : "",
+      userId,
+      projectId: result[0].projectId,
+    });
+
     if (!result.length) {
       throw new NodeError(
         ErrorMessage.SOMETHING_WENT_WRONG,
@@ -66,9 +78,17 @@ const createProjectDoc = async (
       );
     }
 
+    await database
+      .update(Rewards)
+      .set({
+        score: sql`${Rewards.score} + ${Score.CREATE_PROJECT}`,
+      })
+      .where(eq(Rewards.userId, userId));
+
     return res.status(APIStatusCode.CREATED).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOCS_CREATE,
+      data: { projectDocId: result[0].projectId },
     });
   } catch (error) {
     next(error);
