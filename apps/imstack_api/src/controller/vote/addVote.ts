@@ -1,5 +1,100 @@
+import { Users, Votes } from "./../../database/schema";
 import { NextFunction, Request, Response } from "express";
+import NodeError from "../../utils/NodeError";
+import {
+  APIStatusCode,
+  CommentType,
+  ErrorCode,
+  ErrorMessage,
+  ResponseStatus,
+  SuccesMessage,
+  VoteValue,
+} from "../../utils/enums";
+import { database } from "../../database/connection";
+import { eq } from "drizzle-orm";
 
-const addVote = (req: Request, res: Response, next: NextFunction) => {};
+const addVote = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId } = req.params;
+  const { vote, answerId, questionId } = req.body;
+  const voteType =
+    questionId && answerId
+      ? ""
+      : questionId
+        ? CommentType.QUESTION
+        : answerId
+          ? CommentType.ANSWER
+          : "";
+  try {
+    if (!userId || !vote || !voteType) {
+      throw new NodeError(
+        ErrorMessage.ADD_VOTE,
+        APIStatusCode.BAD_REQUEST,
+        ErrorCode.INVALID_DATA
+      );
+    }
+
+    const user = await database.query.Users.findFirst({
+      where: (Users, { inArray }) => inArray(Users.userId, [userId]),
+    });
+    if (user) {
+      throw new NodeError(
+        ErrorMessage.ACTIVITIES_USER,
+        APIStatusCode.NOT_FOUND,
+        ErrorCode.INVALID_DATA
+      );
+    }
+
+    let result;
+
+    const userVote = await database.query.Votes.findFirst({
+      where:
+        voteType === CommentType.QUESTION
+          ? (Votes, { and, eq }) =>
+              and(
+                eq(Votes.type, CommentType.QUESTION),
+                eq(Votes.questionId, questionId)
+              )
+          : (Votes, { and, eq }) =>
+              and(
+                eq(Votes.type, CommentType.ANSWER),
+                eq(Votes.answerId, answerId)
+              ),
+    });
+    if (userVote) {
+      result = await database
+        .update(Votes)
+        .set({
+          vote: vote ? VoteValue.POSITIVE : VoteValue.NEGATIVE,
+        })
+        .where(eq(Votes.voteId, userVote.voteId))
+        .returning({ voteId: Votes.voteId });
+    } else {
+      result = await database
+        .insert(Votes)
+        .values({
+          type: voteType,
+          userId,
+          answerId: voteType === CommentType.ANSWER ? answerId : null,
+          questionId: voteType === CommentType.QUESTION ? questionId : null,
+        })
+        .returning({ voteId: Votes.voteId });
+    }
+    if (!result || !result.length) {
+      throw new NodeError(
+        ErrorMessage.SOMETHING_WENT_WRONG,
+        APIStatusCode.INTERNAL_SERVER_ERROR,
+        ErrorCode.SERVER_ERROR
+      );
+    }
+
+    res.send(APIStatusCode.OK).json({
+      status: ResponseStatus.SUCCESS,
+      message: SuccesMessage.ADD_VOTE,
+      data: { voteId: result[0].voteId },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export default addVote;

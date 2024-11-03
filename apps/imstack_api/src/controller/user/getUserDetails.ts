@@ -29,13 +29,13 @@ const getUserDetails = async (
       with: {
         Rewards: true,
         UserTechnologies: {
-          columns: {},
+          columns: { userTechId: true },
           with: {
             Technologies: true,
           },
         },
         UsersRoles: {
-          columns: {},
+          columns: { usersRoleId: true },
           with: {
             Roles: true,
             Projects: {

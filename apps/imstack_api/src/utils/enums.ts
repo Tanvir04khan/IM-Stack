@@ -44,6 +44,9 @@ export enum ErrorMessage {
   USER_EXIST = "User already exists.",
   ADMIN_ROLE = "User doesn't have admin role.",
   GET_USER_DETAILS = "Please provide valid userId.",
+  UPDATE_USER_DETAILS = "Please provide valid user details.",
+  UPDATE_USER_DETAILS_RES = "Either you don't have the role to update this user or something went wrong while updation.",
+  ADD_VOTE = "Please provide valid vote details.",
 }
 
 export enum SuccesMessage {
@@ -63,6 +66,8 @@ export enum SuccesMessage {
   ADD_USER = "User added successfully.",
   GET_USERS = "Users found.",
   GET_USER_DETAILS = "User details found.",
+  UPDATE_USER_DETAILS = "User details updated successfully.",
+  ADD_VOTE = "Vote added successfully.",
 }
 
 export enum TagsType {
@@ -92,4 +97,9 @@ export enum Roles {
   ADMIN = "Admin",
   MANAGER = "Manager",
   WRITE = "Write",
+}
+
+export enum VoteValue {
+  POSITIVE = 1,
+  NEGATIVE = -1,
 }
