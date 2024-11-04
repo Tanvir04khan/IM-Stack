@@ -76,6 +76,7 @@ const updateProjectDoc = async (
     res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOC_DETAILS_UPDATE,
+      data: {},
     });
   } catch (error) {
     next(error);

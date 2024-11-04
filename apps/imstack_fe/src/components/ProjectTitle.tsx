@@ -1,3 +1,4 @@
+import { PanelsTopLeft } from "lucide-react";
 import React from "react";
 
 type ProjectTitleType = {
@@ -15,7 +16,11 @@ const ProjectTitle = ({
 }: ProjectTitleType) => {
   return (
     <div className={"flex items-center gap-2 w-max-content " + className}>
-      <img className={imageClassName} src={imageSrc} />
+      {imageSrc ? (
+        <img className={imageClassName} src={imageSrc} alt="Icon" />
+      ) : (
+        <PanelsTopLeft className={imageClassName} />
+      )}
       <h1>{ProjectName}</h1>
     </div>
   );

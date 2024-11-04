@@ -5,15 +5,26 @@ import Header from "@/components/Header";
 
 import { ArrowUpRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
-import { ProductsColumn, QuestionsColumn, TotalActivities } from "@/enum";
-import { questionActivities, totalActivities } from "@/utilts";
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+  Paths,
+  ProductsColumn,
+  QueryKeys,
+  QuestionsColumn,
+  TotalActivities,
+} from "@/enum";
+import { customFetch, questionActivities, totalActivities } from "@/utilts";
 import ActivityCard from "@/components/ActivityCard";
 import {
   TableColumnsType,
   ProjectsRowstype,
   TotalActivitiesType,
   QuestionsRowsType,
+  ResponseType,
+  RUserType,
+  RActivitiesType,
+  RProjectDocsType,
+  RQuestionsType,
 } from "@/type";
 import imstackLogo from "../images/IMSTACKLOGO.png";
 import Table from "@/components/Table";
@@ -21,57 +32,15 @@ import Card from "@/components/Card";
 import QuestionActivity from "@/components/QuestionActivity";
 import Question from "@/components/Question";
 import ProjectTitle from "@/components/ProjectTitle";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ActivitiesType = {
-  [TotalActivities.TOTALPROJECTS]: number;
-  [TotalActivities.TOTALQUESTIONS]: number;
-  [TotalActivities.TOTALANSWERS]: number;
-  [TotalActivities.TOTALVOTES]: number;
+  [TotalActivities.TOTALPROJECTS]: number | undefined;
+  [TotalActivities.TOTALQUESTIONS]: number | undefined;
+  [TotalActivities.TOTALANSWERS]: number | undefined;
+  [TotalActivities.TOTALVOTES]: number | undefined;
 };
-
-const activitiesInitialValues: ActivitiesType = {
-  [TotalActivities.TOTALPROJECTS]: 10,
-  [TotalActivities.TOTALQUESTIONS]: 200,
-  [TotalActivities.TOTALANSWERS]: 20,
-  [TotalActivities.TOTALVOTES]: 40,
-};
-const projectRows: ProjectsRowstype[] = [
-  {
-    name: <ProjectTitle imageSrc={imstackLogo} ProjectName="IM Stack" />,
-    createdBy: "Tanvir Khan",
-    createdOn: "20-08-24",
-    updatedBy: "Tanvir Khan",
-    updatedOn: "20-08-24",
-  },
-  {
-    name: <ProjectTitle imageSrc={imstackLogo} ProjectName="IM Stack" />,
-    createdBy: "Tanvir Khan",
-    createdOn: "20-08-24",
-    updatedBy: "Tanvir Khan",
-    updatedOn: "20-08-24",
-  },
-  {
-    name: <ProjectTitle imageSrc={imstackLogo} ProjectName="IM Stack" />,
-    createdBy: "Tanvir Khan",
-    createdOn: "20-08-24",
-    updatedBy: "Tanvir Khan",
-    updatedOn: "20-08-24",
-  },
-  {
-    name: <ProjectTitle imageSrc={imstackLogo} ProjectName="IM Stack" />,
-    createdBy: "Tanvir Khan",
-    createdOn: "20-08-24",
-    updatedBy: "Tanvir Khan",
-    updatedOn: "20-08-24",
-  },
-  {
-    name: <ProjectTitle imageSrc={imstackLogo} ProjectName="IM Stack" />,
-    createdBy: "Tanvir Khan",
-    createdOn: "20-08-24",
-    updatedBy: "Tanvir Khan",
-    updatedOn: "20-08-24",
-  },
-];
 
 const projectColumns: TableColumnsType[] = [
   { field: ProductsColumn.NAME, title: "Name", textAlignment: "left" },
@@ -104,111 +73,268 @@ export const questionColumns: TableColumnsType[] = [
   { field: QuestionsColumn.ACTIVITY, title: "Activity", textAlignment: "left" },
 ];
 
-export const questionRows: QuestionsRowsType[] = [
-  {
-    title: (
-      <Question
-        title="IM Stack setup and developers."
-        description=" how can we set up IM Stack and who are the developers?"
-      />
-    ),
-    askedBy: "Tanvir Khan",
-    askedOn: "12/10/2024",
-    activity: <QuestionActivity questionActivities={questionActivities} />,
-  },
-  {
-    title: (
-      <Question
-        title="IM Stack setup and developers."
-        description=" how can we set up IM Stack and who are the developers?"
-      />
-    ),
-    askedBy: "Tanvir Khan",
-    askedOn: "12/10/2024",
-    activity: <QuestionActivity questionActivities={questionActivities} />,
-  },
-  {
-    title: (
-      <Question
-        title="IM Stack setup and developers."
-        description=" how can we set up IM Stack and who are the developers?"
-      />
-    ),
-    askedBy: "Tanvir Khan",
-    askedOn: "12/10/2024",
-    activity: <QuestionActivity questionActivities={questionActivities} />,
-  },
-  {
-    title: (
-      <Question
-        title="IM Stack setup and developers."
-        description=" how can we set up IM Stack and who are the developers?"
-      />
-    ),
-    askedBy: "Tanvir Khan",
-    askedOn: "12/10/2024",
-    activity: <QuestionActivity questionActivities={questionActivities} />,
-  },
-  {
-    title: (
-      <Question
-        title="IM Stack setup and developers."
-        description=" how can we set up IM Stack and who are the developers?"
-      />
-    ),
-    askedBy: "Tanvir Khan",
-    askedOn: "12/10/2024",
-    activity: <QuestionActivity questionActivities={questionActivities} />,
-  },
-];
+// export const questionRows: QuestionsRowsType[] = [
+//   {
+//     title: (
+//       <Question
+//         title="IM Stack setup and developers."
+//         description=" how can we set up IM Stack and who are the developers?"
+//       />
+//     ),
+//     askedBy: "Tanvir Khan",
+//     askedOn: "12/10/2024",
+//     activity: <QuestionActivity questionActivities={questionActivities} />,
+//   },
+//   {
+//     title: (
+//       <Question
+//         title="IM Stack setup and developers."
+//         description=" how can we set up IM Stack and who are the developers?"
+//       />
+//     ),
+//     askedBy: "Tanvir Khan",
+//     askedOn: "12/10/2024",
+//     activity: <QuestionActivity questionActivities={questionActivities} />,
+//   },
+//   {
+//     title: (
+//       <Question
+//         title="IM Stack setup and developers."
+//         description=" how can we set up IM Stack and who are the developers?"
+//       />
+//     ),
+//     askedBy: "Tanvir Khan",
+//     askedOn: "12/10/2024",
+//     activity: <QuestionActivity questionActivities={questionActivities} />,
+//   },
+//   {
+//     title: (
+//       <Question
+//         title="IM Stack setup and developers."
+//         description=" how can we set up IM Stack and who are the developers?"
+//       />
+//     ),
+//     askedBy: "Tanvir Khan",
+//     askedOn: "12/10/2024",
+//     activity: <QuestionActivity questionActivities={questionActivities} />,
+//   },
+//   {
+//     title: (
+//       <Question
+//         title="IM Stack setup and developers."
+//         description=" how can we set up IM Stack and who are the developers?"
+//       />
+//     ),
+//     askedBy: "Tanvir Khan",
+//     askedOn: "12/10/2024",
+//     activity: <QuestionActivity questionActivities={questionActivities} />,
+//   },
+// ];
 
 const Home = () => {
-  const [activities, setActivities] = useState<ActivitiesType>(
-    activitiesInitialValues
-  );
   const { user } = useUser();
+  const navigation = useNavigate();
+
+  //User
+  const { data: userdetails, isLoading } = useQuery<ResponseType<RUserType>>({
+    queryKey: [QueryKeys.GET_USER],
+    queryFn: getUser,
+  });
+
+  //Activities
+  const { data: activitiesdata, isLoading: isLoadingActivities } = useQuery<
+    ResponseType<RActivitiesType>
+  >({
+    queryKey: [QueryKeys.GET_ACTIVITIES, userdetails?.data.userId],
+    queryFn: getActivities,
+    enabled: !!userdetails,
+  });
+
+  //ProjectDocs
+  const { data: projectDocs, isLoading: isLoadingProjectDocs } = useQuery<
+    ResponseType<RProjectDocsType>
+  >({
+    queryKey: [QueryKeys.GET_PROJECT_DOCS, userdetails?.data.userId],
+    queryFn: getProjectDocs,
+    enabled: !!userdetails,
+  });
+
+  //Questions
+  const { data: questions, isLoading: isLoadingQuestions } = useQuery<
+    ResponseType<RQuestionsType>
+  >({
+    queryKey: [QueryKeys.GET_QUESTIONS, userdetails?.data.userId],
+    queryFn: getQuestions,
+    enabled: !!userdetails,
+  });
+
+  async function getActivities(): Promise<ResponseType<RActivitiesType>> {
+    const data = await customFetch(
+      `${Paths.GET_ACTIVITIES}/${userdetails?.data.userId}`
+    );
+    return data;
+  }
+
+  async function getUser(): Promise<ResponseType<RUserType>> {
+    const data = await customFetch(`${Paths.GET_USER}/${user?.id}`);
+    return data;
+  }
+
+  async function getProjectDocs(): Promise<ResponseType<RProjectDocsType>> {
+    const data = await customFetch(
+      `${Paths.GET_PROJECT_DOCS}/${userdetails?.data.userId}?limit=5`
+    );
+    return data;
+  }
+
+  async function getQuestions(): Promise<ResponseType<RQuestionsType>> {
+    const data = await customFetch(
+      `${Paths.GET_QUESTIONS}/${userdetails?.data.userId}?limit=5`
+    );
+    return data;
+  }
+
+  const activitiesValues: ActivitiesType = {
+    [TotalActivities.TOTALPROJECTS]: activitiesdata?.data.totalProjects,
+    [TotalActivities.TOTALQUESTIONS]: activitiesdata?.data.totalQuestions,
+    [TotalActivities.TOTALANSWERS]: activitiesdata?.data.totalAnswers,
+    [TotalActivities.TOTALVOTES]: activitiesdata?.data.totalVotes,
+  };
+
+  const projectDocsRows: ProjectsRowstype[] = projectDocs
+    ? projectDocs.data.map(
+        ({
+          projectId,
+          icon,
+          projectName,
+          createdBy,
+          createdOn,
+          modifiedBy,
+          modifiedOn,
+        }) => ({
+          name: <ProjectTitle imageSrc={icon} ProjectName={projectName} />,
+          projectId,
+          createdBy: createdBy.userName,
+          createdOn: createdOn.split("T")[0],
+          updatedBy: modifiedBy.userName,
+          updatedOn: modifiedOn.split("T")[0],
+          onClick: () => navigation({ to: `/projectdocs/${projectId}` }),
+        })
+      )
+    : [];
+
+  const questionRows: QuestionsRowsType[] = questions
+    ? questions?.data.map(
+        ({
+          Answers,
+          title,
+          question,
+          askedOn,
+          views,
+          Users,
+          Votes,
+          questionId,
+        }) => ({
+          title: (
+            <Question
+              title={title}
+              description={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: question.substring(0, 30) + "....",
+                  }}
+                />
+              }
+            />
+          ),
+          askedOn: askedOn.split("T")[0],
+          askedBy: `${Users.firstName} ${Users.lastName}`,
+          activity: (
+            <QuestionActivity
+              questionActivities={questionActivities.map((item) => ({
+                ...item,
+                value:
+                  item.name === "Answers"
+                    ? Answers.count
+                    : item.name === "Views"
+                      ? views
+                      : Votes,
+              }))}
+            />
+          ),
+          onClick: () => navigation({ to: `/questions/${questionId}` }),
+        })
+      )
+    : [];
 
   return (
-    <Header>
-      <section className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          {totalActivities.map((activity: TotalActivitiesType) => (
-            <ActivityCard
-              key={activity.title}
-              content={activities[activity.title]}
-              {...activity}
+    <Header
+      isLoading={
+        isLoading ||
+        isLoadingActivities ||
+        isLoadingProjectDocs ||
+        isLoadingQuestions
+      }
+    >
+      {!isLoading &&
+      !isLoadingActivities &&
+      !isLoadingProjectDocs &&
+      !isLoadingQuestions ? (
+        <section className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            {totalActivities.map((activity: TotalActivitiesType) => (
+              <ActivityCard
+                key={activity.title}
+                content={activitiesValues[activity.title]}
+                {...activity}
+              />
+            ))}
+          </div>
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-2 ">
+            <Card
+              title="Projects"
+              description="Recently created/updated projects."
+              action={
+                <Button asChild className="ml-auto gap-1">
+                  <Link to="/projectdocs">
+                    View All
+                    <ArrowUpRightIcon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              }
+              content={
+                <Table columns={projectColumns} rows={projectDocsRows} />
+              }
             />
-          ))}
-        </div>
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 ">
-          <Card
-            title="Projects"
-            description="Recently created/updated projects."
-            action={
-              <Button asChild className="ml-auto gap-1">
-                <Link to="/projectdocs">
-                  View All
-                  <ArrowUpRightIcon className="h-4 w-4" />
-                </Link>
-              </Button>
-            }
-            content={<Table columns={projectColumns} rows={projectRows} />}
-          />
-          <Card
-            title="Questions"
-            description="Recently asked questions."
-            action={
-              <Button asChild className="ml-auto gap-1">
-                <Link to="/questions">
-                  View All
-                  <ArrowUpRightIcon className="h-4 w-4" />
-                </Link>
-              </Button>
-            }
-            content={<Table columns={questionColumns} rows={questionRows} />}
-          />
-        </div>
-      </section>
+            <Card
+              title="Questions"
+              description="Recently asked questions."
+              action={
+                <Button asChild className="ml-auto gap-1">
+                  <Link to="/questions">
+                    View All
+                    <ArrowUpRightIcon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              }
+              content={<Table columns={questionColumns} rows={questionRows} />}
+            />
+          </div>
+        </section>
+      ) : (
+        <section className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            <Skeleton className="w-[18rem] h-[7.75rem]" />
+            <Skeleton className="w-[18rem] h-[7.75rem]" />
+            <Skeleton className="w-[18rem] h-[7.75rem]" />
+            <Skeleton className="w-[18rem] h-[7.75rem]" />
+          </div>
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-2 ">
+            <Skeleton className="w-[38.125rem] h-[33.75rem]" />
+            <Skeleton className="w-[38.125rem] h-[33.75rem]" />
+          </div>
+        </section>
+      )}
     </Header>
   );
 };

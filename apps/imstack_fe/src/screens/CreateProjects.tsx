@@ -41,7 +41,7 @@ const CreateProjects = () => {
   };
 
   return (
-    <Header>
+    <Header isLoading={false}>
       <Card
         title="Create new project"
         content={

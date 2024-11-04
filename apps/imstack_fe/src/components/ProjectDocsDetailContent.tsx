@@ -1,6 +1,7 @@
 import React from "react";
 import InfoDisplay, { InfoDisplayPropsType } from "./InfoDisplay";
 import CreateProjectContent from "./CreateProjectContent";
+import Tag from "./Tag";
 
 type ProjectDocsDetailContentPropsType = {
   createUpdateDetails: InfoDisplayPropsType[];
@@ -13,6 +14,7 @@ type ProjectDocsDetailContentPropsType = {
   setProjectSummary: (value: string) => void;
   projectSummary: string;
   isEditable: boolean;
+  tags: { technologyId: string; technology: string }[];
 };
 
 const ProjectDocsDetailContent = ({
@@ -26,6 +28,7 @@ const ProjectDocsDetailContent = ({
   setProjectSummary,
   projectSummary,
   isEditable,
+  tags,
 }: ProjectDocsDetailContentPropsType) => {
   return (
     <>
@@ -47,7 +50,23 @@ const ProjectDocsDetailContent = ({
             setProjectSummary={setProjectSummary}
           />
         ) : (
-          <div className="w-full flex items-center justify-center mt-8">
+          <div className="w-full flex flex-col items-center justify-center gap-4 mt-8">
+            <div>
+              <h1 className="flex flex-col gap-2 text-sm text-muted-foreground">
+                Summary
+              </h1>
+              <h1>{projectSummary}</h1>
+            </div>
+            <div className="w-full flex flex-col gap-2">
+              <h1 className="flex flex-col gap-2 text-sm text-muted-foreground">
+                Technologies
+              </h1>
+              <div className="w-full flex flex-row flex-wrap gap-1">
+                {tags.map(({ technology, technologyId }) => (
+                  <Tag key={technologyId} content={technology} />
+                ))}
+              </div>
+            </div>
             <div
               className="w-full"
               dangerouslySetInnerHTML={{ __html: editorContent }}

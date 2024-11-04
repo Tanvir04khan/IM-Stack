@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { CircleUser, CoinsIcon, Layers, Menu, Search } from "lucide-react";
+import { Layers, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,18 +16,24 @@ import { ModeToggle } from "@/components/theme/mode-toggle";
 import { useAuth } from "@clerk/clerk-react";
 import { navItems } from "@/utilts";
 import { cn } from "@/lib/utils";
-import ProjectTitle from "./ProjectTitle";
-import imstackImage from "../images/IMSTACKLOGO.png";
 import Spinner from "./Spinner";
+import { useQuery } from "@tanstack/react-query";
+import { QueryKeys } from "@/enum";
+import { ResponseType, RUserType } from "@/type";
+import { AvatarIcon } from "@radix-ui/react-icons";
 
 type HeaderPropsType = {
   children: ReactNode;
+  isLoading: boolean;
 };
 
-const Header = ({ children }: HeaderPropsType) => {
+const Header = ({ children, isLoading }: HeaderPropsType) => {
   const { signOut } = useAuth();
   const { fullPath } = useMatch({ from: "" });
   const navigation = useNavigate();
+  const { data: userDetails } = useQuery<ResponseType<RUserType>>({
+    queryKey: [QueryKeys.GET_USER],
+  });
 
   const handleSignOut = async () => {
     try {
@@ -37,10 +43,10 @@ const Header = ({ children }: HeaderPropsType) => {
       console.error(err);
     }
   };
-
+  console.log(userDetails, "from header...........");
   return (
     <div className="flex min-h-screen w-full flex-col">
-      {/* <Spinner /> */}
+      {isLoading && <Spinner />}
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-40">
         <nav className="hidden flex-col gap-6 text-lg font-medium lg:flex lg:flex-row lg:items-center lg:text-sm lg:gap-6">
           <Link
@@ -130,13 +136,21 @@ const Header = ({ children }: HeaderPropsType) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
-                <img src={imstackImage} className="h-8 w-8 rounded-full" />
+                {userDetails?.data.image ? (
+                  <img
+                    src={userDetails?.data.image}
+                    alt="User"
+                    className="h-8 w-8 rounded-full"
+                  />
+                ) : (
+                  <AvatarIcon className="h-8 w-8" />
+                )}
 
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Tanvir Khan</DropdownMenuLabel>
+              <DropdownMenuLabel>{`${userDetails?.data.firstName} ${userDetails?.data.lastName}`}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigation({ to: "/profile/test" })}

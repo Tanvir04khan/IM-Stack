@@ -59,16 +59,37 @@ export const questionActivities: ActivityPropsType[] = [
   {
     name: "Views",
     Icon: Eye,
-    value: 600,
+    value: 0,
   },
   {
     name: "Answers",
     Icon: FolderSync,
-    value: 10,
+    value: 0,
   },
   {
     name: "Votes",
     Icon: Vote,
-    value: 200,
+    value: 0,
   },
 ];
+
+const baseURL = import.meta.env.VITE_API_ENDPOINT;
+
+export const customFetch = async (
+  path: string | URL | globalThis.Request,
+  body?: any,
+  method: "GET" | "POST" | "PUT" | "DELETE" = "GET"
+) => {
+  const response = await fetch(`${baseURL}${path}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method,
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  return response.json();
+};

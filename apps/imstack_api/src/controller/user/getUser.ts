@@ -10,10 +10,11 @@ import {
 } from "../../utils/enums";
 import NodeError from "../../utils/NodeError";
 
-const getUsers = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.params;
+const getUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { clerkUserId } = req.params;
+  console.log(clerkUserId, "from.......test");
   try {
-    if (!userId) {
+    if (!clerkUserId) {
       throw new NodeError(
         ErrorMessage.GET_USERS,
         APIStatusCode.BAD_REQUEST,
@@ -21,33 +22,24 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
     const user = await database.query.Users.findFirst({
-      where: (Users, { inArray }) => inArray(Users.userId, [userId]),
-      columns: {},
+      where: (Users, { inArray }) => inArray(Users.clerkUserID, [clerkUserId]),
       with: {
         UsersRoles: {
-          columns: { projectId: true },
+          columns: {},
           with: {
             Roles: true,
+            Projects: {
+              columns: {
+                projectName: true,
+                projectId: true,
+              },
+            },
           },
         },
       },
     });
 
-    const hasAdminRole = user?.UsersRoles.some(
-      ({ Roles }) => Roles.role === URoles.ADMIN
-    );
-
-    if (!hasAdminRole) {
-      throw new NodeError(
-        ErrorMessage.ADMIN_ROLE,
-        APIStatusCode.BAD_REQUEST,
-        ErrorCode.INVALID_REQUEST
-      );
-    }
-
-    let data = await database.query.Users.findMany();
-
-    if (!data.length) {
+    if (!user) {
       throw new NodeError(
         ErrorMessage.NO_DATA_FOUND,
         APIStatusCode.NOT_FOUND,
@@ -58,11 +50,11 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.GET_USERS,
-      data,
+      data: user,
     });
   } catch (error) {
     next(error);
   }
 };
 
-export default getUsers;
+export default getUser;

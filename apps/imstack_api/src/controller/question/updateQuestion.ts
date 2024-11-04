@@ -62,6 +62,7 @@ const updateQuestion = async (
     res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.UPDATE_QUESTION,
+      data: {},
     });
   } catch (error) {
     next(error);

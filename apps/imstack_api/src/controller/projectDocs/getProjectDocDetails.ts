@@ -5,6 +5,7 @@ import {
   ErrorMessage,
   ResponseStatus,
   SuccesMessage,
+  TagsType,
 } from "../../utils/enums";
 import NodeError from "../../utils/NodeError";
 import { database } from "../../database/connection";
@@ -26,12 +27,40 @@ const getProjectDocDetails = async (
       );
     }
 
-    const projectDocDetails = await database
-      .select()
-      .from(Projects)
-      .where(eq(Projects.projectId, projectDocId));
+    const projectDocDetails = await database.query.Projects.findFirst({
+      where: (Projects, { eq }) => eq(Projects.projectId, projectDocId),
+      with: {
+        Tags: {
+          where: (Tags, { eq }) => eq(Tags.type, TagsType.PROJECT),
+          columns: {},
+          with: {
+            Technologies: true,
+          },
+        },
+      },
+    });
 
-    if (!projectDocDetails.length) {
+    const createdBy = await database.query.Users.findFirst({
+      where: (Users, { eq }) =>
+        eq(Users.userId, projectDocDetails ? projectDocDetails.createdBy : ""),
+      columns: {
+        firstName: true,
+        lastName: true,
+        userId: true,
+      },
+    });
+
+    const modifiedBy = await database.query.Users.findFirst({
+      where: (Users, { eq }) =>
+        eq(Users.userId, projectDocDetails ? projectDocDetails.modifiedBy : ""),
+      columns: {
+        firstName: true,
+        lastName: true,
+        userId: true,
+      },
+    });
+
+    if (!projectDocDetails) {
       throw new NodeError(
         ErrorMessage.NO_DATA_FOUND,
         APIStatusCode.NOT_FOUND,
@@ -39,13 +68,13 @@ const getProjectDocDetails = async (
       );
     }
 
-    let icon = projectDocDetails[0].icon.toString("base64");
-    icon = projectDocDetails[0].iconType + "," + icon;
+    let icon = projectDocDetails?.icon.toString("base64");
+    icon = projectDocDetails?.iconType + "," + icon;
 
     return res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOC_DETAILS,
-      data: { ...projectDocDetails[0], icon },
+      data: { ...projectDocDetails, icon, createdBy, modifiedBy },
     });
   } catch (error) {
     next(error);

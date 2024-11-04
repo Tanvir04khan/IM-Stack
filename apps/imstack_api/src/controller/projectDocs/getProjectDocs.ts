@@ -6,12 +6,11 @@ import {
   ErrorMessage,
   ResponseStatus,
   SuccesMessage,
-  TagsTagType,
   TagsType,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Projects, Tags, Technologies, Users } from "../../database/schema";
-import { and, eq } from "drizzle-orm";
+import { Projects, Users } from "../../database/schema";
+import { desc, eq } from "drizzle-orm";
 
 const getProjectDocs = async (
   req: Request,
@@ -19,6 +18,7 @@ const getProjectDocs = async (
   next: NextFunction
 ) => {
   const { userId } = req.params;
+  const { limit } = req.query;
   try {
     if (!userId) {
       throw new NodeError(
@@ -28,13 +28,11 @@ const getProjectDocs = async (
       );
     }
 
-    const user = await database
-      .select()
-      .from(Users)
-      .where(eq(Users.userId, userId))
-      .limit(1);
+    const user = await database.query.Users.findFirst({
+      where: (Users, { eq }) => eq(Users.userId, userId),
+    });
 
-    if (!user.length) {
+    if (!user) {
       throw new NodeError(
         ErrorMessage.ACTIVITIES_USER,
         APIStatusCode.NOT_FOUND,
@@ -42,15 +40,37 @@ const getProjectDocs = async (
       );
     }
 
-    const projects = await database
-      .select({
-        projectId: Projects.projectId,
-        projectName: Projects.projectName,
-        summary: Projects.summary,
-        icon: Projects.icon,
-        iconType: Projects.iconType,
-      })
-      .from(Projects);
+    const projects = await database.query.Projects.findMany({
+      columns: {
+        projectId: true,
+        projectName: true,
+        summary: true,
+        icon: true,
+        iconType: true,
+        createdBy: true,
+        createdOn: true,
+        modifiedBy: true,
+        modifiedOn: true,
+      },
+      with: {
+        Tags: {
+          where: (Tags, { eq }) => eq(Tags.type, TagsType.PROJECT),
+          columns: {},
+          with: {
+            Technologies: true,
+          },
+        },
+        Users: {
+          columns: {
+            firstName: true,
+            lastName: true,
+            userId: true,
+          },
+        },
+      },
+      orderBy: [desc(Projects.modifiedOn)],
+      limit: limit ? +limit : undefined,
+    });
 
     if (!projects.length) {
       throw new NodeError(
@@ -60,41 +80,44 @@ const getProjectDocs = async (
       );
     }
 
-    const projectsData: projects[] = [];
+    const modifiedByUserIds = projects.map(({ modifiedBy }) => modifiedBy);
 
-    for (const project of projects) {
-      let icon = project.icon.toString("base64");
-      icon = project.iconType + "," + icon;
-      const projectData: projects = { ...project, icon, tags: [] };
-      const projectTags = await database
-        .select()
-        .from(Tags)
-        .where(
-          and(
-            eq(Tags.type, TagsType.PROJECT),
-            eq(Tags.tagType, TagsTagType.TECHNOLOGY),
-            eq(Tags.projectId, project.projectId)
-          )
-        )
-        .leftJoin(
-          Technologies,
-          eq(Tags.technologyId, Technologies.technologyId)
-        );
+    const modifiedByUserDetails: {
+      userName: string;
+      userId: string | undefined;
+    }[] = [];
 
-      const tags = projectTags.map((tag) => ({
-        technologyId: tag.Technologies?.technologyId || "",
-        technology: tag.Technologies?.technology || "",
-      }));
+    for (const modifiedByUserId of modifiedByUserIds) {
+      const modifiedBy = await database.query.Users.findFirst({
+        where: (Users, { eq }) => eq(Users.userId, modifiedByUserId),
+        columns: {
+          firstName: true,
+          lastName: true,
+          userId: true,
+        },
+      });
 
-      projectData.tags = tags;
-
-      projectsData.push(projectData);
+      modifiedByUserDetails.push({
+        userName: `${modifiedBy?.firstName} ${modifiedBy?.lastName}`,
+        userId: modifiedBy?.userId,
+      });
     }
+    console.log(modifiedByUserDetails);
+
+    const data = projects.map((project, i) => ({
+      ...project,
+      icon: project.iconType + "," + project.icon.toString("base64"),
+      createdBy: {
+        userName: `${project.Users.firstName} ${project.Users.lastName}`,
+        userId: project.Users.userId,
+      },
+      modifiedBy: modifiedByUserDetails[i],
+    }));
 
     res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOCS,
-      data: projectsData,
+      data,
     });
   } catch (error) {
     next(error);

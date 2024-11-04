@@ -4,6 +4,7 @@ import { Textarea } from "./ui/textarea";
 import Input from "./Input";
 import TextEditor from "./TextEditor";
 import CircularImageUpload from "./ImageInput";
+import MultiSelectDropdown from "./MultiselectorDropdown";
 
 type CreateProjectContentPropsType = {
   selectedImage: string | ArrayBuffer | null;
@@ -28,7 +29,7 @@ const CreateProjectContent = ({
 }: CreateProjectContentPropsType) => {
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid gap-4 ">
+      <div className=" grid gap-4 ">
         <div className="flex flex-col items-center justify-start gap-4 sm:flex-row ">
           <CircularImageUpload
             lable="Project Image"
@@ -44,13 +45,22 @@ const CreateProjectContent = ({
             onChange={(e) => setProjectName(e.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <Label>Project Summary</Label>
-          <Textarea
-            className="h-20"
-            placeholder="Project Summary..."
-            value={projectSummary}
-            onChange={(e) => setProjectSummary(e.target.value)}
+        <div className="w-full flex flex-col gap-4 md:flex-row">
+          <div className="w-full flex flex-col gap-2">
+            <Label>Project Summary</Label>
+            <Textarea
+              className="h-20"
+              placeholder="Project Summary..."
+              value={projectSummary}
+              onChange={(e) => setProjectSummary(e.target.value)}
+            />
+          </div>
+          <MultiSelectDropdown
+            label="Technologies"
+            placeholder="Select technologies..."
+            onSelect={() => {}}
+            options={["test", "test"]}
+            value={[]}
           />
         </div>
       </div>

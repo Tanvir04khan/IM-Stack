@@ -11,8 +11,6 @@ import {
   TagsType,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Users } from "../../database/schema";
-import { eq } from "drizzle-orm";
 
 const getQuestions = async (
   req: Request,
@@ -20,6 +18,7 @@ const getQuestions = async (
   next: NextFunction
 ) => {
   const { userId } = req.params;
+  const { limit } = req.query;
   try {
     if (!userId) {
       throw new NodeError(
@@ -52,7 +51,16 @@ const getQuestions = async (
             Projects: true,
           },
         },
+        Users: {
+          columns: {
+            firstName: true,
+            lastName: true,
+            userId: true,
+          },
+        },
+        Votes: true,
       },
+      limit: limit ? +limit : undefined,
     });
 
     if (!questions.length) {
@@ -62,8 +70,6 @@ const getQuestions = async (
         ErrorCode.NO_DATA_FOUND
       );
     }
-
-    console.log(questions[0].Tags);
 
     const data = questions.map((data) => ({
       ...data,
@@ -87,6 +93,10 @@ const getQuestions = async (
           })
         ),
       },
+      Votes: data.Votes.reduce(
+        (prevValue, { vote }) => prevValue + (vote ? vote : 0),
+        0
+      ),
     }));
 
     res.status(APIStatusCode.OK).json({
