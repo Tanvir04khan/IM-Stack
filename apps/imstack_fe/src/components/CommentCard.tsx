@@ -6,6 +6,7 @@ export type CommentCardPropsType = {
   userName: string;
   imageSrc?: string;
   comment: string;
+  commentId: string;
   commentedOn: string;
 };
 

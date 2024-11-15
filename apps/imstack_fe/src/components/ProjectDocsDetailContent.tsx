@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import InfoDisplay, { InfoDisplayPropsType } from "./InfoDisplay";
 import CreateProjectContent from "./CreateProjectContent";
 import Tag from "./Tag";
@@ -15,6 +15,8 @@ type ProjectDocsDetailContentPropsType = {
   projectSummary: string;
   isEditable: boolean;
   tags: { technologyId: string; technology: string }[];
+  handleTechnologies: Dispatch<SetStateAction<{ id: string; value: string }[]>>;
+  selectedTechnologies: { id: string; value: string }[];
 };
 
 const ProjectDocsDetailContent = ({
@@ -29,6 +31,8 @@ const ProjectDocsDetailContent = ({
   projectSummary,
   isEditable,
   tags,
+  handleTechnologies,
+  selectedTechnologies,
 }: ProjectDocsDetailContentPropsType) => {
   return (
     <>
@@ -40,6 +44,8 @@ const ProjectDocsDetailContent = ({
         </div>
         {isEditable ? (
           <CreateProjectContent
+            handleTechnologies={handleTechnologies}
+            selectedTechnologies={selectedTechnologies}
             projectName={projectName}
             selectedImage={selectedImage}
             setProjectName={setProjectName}
@@ -67,10 +73,15 @@ const ProjectDocsDetailContent = ({
                 ))}
               </div>
             </div>
-            <div
-              className="w-full"
-              dangerouslySetInnerHTML={{ __html: editorContent }}
-            ></div>
+            <div className="w-full flex flex-col gap-2">
+              <h1 className="flex flex-col gap-2 text-sm text-muted-foreground">
+                Document
+              </h1>
+              <div
+                className="w-full"
+                dangerouslySetInnerHTML={{ __html: editorContent }}
+              ></div>
+            </div>
           </div>
         )}
       </div>

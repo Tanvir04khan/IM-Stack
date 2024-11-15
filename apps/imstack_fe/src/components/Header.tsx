@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { Fragment, ReactNode } from "react";
 import { Layers, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useMatch, useNavigate } from "@tanstack/react-router";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { useAuth } from "@clerk/clerk-react";
-import { navItems } from "@/utilts";
+import { getUser, navItems } from "@/utilts";
 import { cn } from "@/lib/utils";
 import Spinner from "./Spinner";
 import { useQuery } from "@tanstack/react-query";
@@ -28,25 +28,28 @@ type HeaderPropsType = {
 };
 
 const Header = ({ children, isLoading }: HeaderPropsType) => {
-  const { signOut } = useAuth();
+  const { signOut, userId } = useAuth();
   const { fullPath } = useMatch({ from: "" });
   const navigation = useNavigate();
-  const { data: userDetails } = useQuery<ResponseType<RUserType>>({
+  const { data: userDetails, isFetching: isUserDetailsLoading } = useQuery<
+    ResponseType<RUserType>
+  >({
     queryKey: [QueryKeys.GET_USER],
+    queryFn: () => getUser(userId ? userId : ""),
+    staleTime: 1000 * 5 * 60,
   });
 
   const handleSignOut = async () => {
     try {
       const response = await signOut();
-      console.log(response);
     } catch (err) {
       console.error(err);
     }
   };
-  console.log(userDetails, "from header...........");
+
   return (
     <div className="flex min-h-screen w-full flex-col">
-      {isLoading && <Spinner />}
+      {(isLoading || isUserDetailsLoading) && <Spinner />}
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-40">
         <nav className="hidden flex-col gap-6 text-lg font-medium lg:flex lg:flex-row lg:items-center lg:text-sm lg:gap-6">
           <Link
@@ -59,16 +62,25 @@ const Header = ({ children, isLoading }: HeaderPropsType) => {
             </div>
           </Link>
           {navItems.map(({ item, path }) => (
-            <Link
-              key={item}
-              to={path}
-              className={cn(
-                "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
-                { "text-foreground": fullPath?.includes(path) }
+            <>
+              {item === "Manage Users" &&
+              !userDetails?.data.UsersRoles.some(
+                ({ Roles }) => Roles.role === "Admin"
+              ) ? (
+                <Fragment key={path}></Fragment>
+              ) : (
+                <Link
+                  key={item}
+                  to={path}
+                  className={cn(
+                    "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
+                    { "text-foreground": fullPath?.includes(path) }
+                  )}
+                >
+                  {item}
+                </Link>
               )}
-            >
-              {item}
-            </Link>
+            </>
           ))}
         </nav>
         <Sheet>
@@ -108,16 +120,25 @@ const Header = ({ children, isLoading }: HeaderPropsType) => {
                 </div>
               </Link>
               {navItems.map(({ item, path }) => (
-                <Link
-                  key={item}
-                  to={path}
-                  className={cn(
-                    "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
-                    { "text-foreground": fullPath?.includes(path) }
+                <>
+                  {item === "Manage Users" &&
+                  !userDetails?.data.UsersRoles.some(
+                    ({ Roles }) => Roles.role === "Admin"
+                  ) ? (
+                    <Fragment key={path}></Fragment>
+                  ) : (
+                    <Link
+                      key={item}
+                      to={path}
+                      className={cn(
+                        "text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap cursor-pointer",
+                        { "text-foreground": fullPath?.includes(path) }
+                      )}
+                    >
+                      {item}
+                    </Link>
                   )}
-                >
-                  {item}
-                </Link>
+                </>
               ))}
             </nav>
           </SheetContent>

@@ -15,50 +15,58 @@ import {
 } from "@/type";
 import ProjectDocsDetailsDesc from "@/components/ProjectDocsDetailsDesc";
 import ProjectDocsDetailContent from "@/components/ProjectDocsDetailContent";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { Paths, QueryKeys } from "@/enum";
-import { customFetch } from "@/utilts";
+import { customFetch, getUser } from "@/utilts";
+import { Skeleton } from "@/components/ui/skeleton";
+import Alert from "@/components/Alert";
+import { useUser } from "@clerk/clerk-react";
 
-const createUpdateDetails: InfoDisplayPropsType[] = [
-  {
-    lable: "Created By",
-    value: "Tanvir Khan",
-  },
-  {
-    lable: "Created On",
-    value: "20/04/2024",
-  },
-  {
-    lable: "Updated By",
-    value: "Tanvir Khan",
-  },
-  {
-    lable: "Updated On",
-    value: "20/04/2024",
-  },
-];
-
-const liveUsers: AvatarWithTooltip[] = [
-  {
-    name: "Tanvir Khan",
-    avatar: <AvatarIcon className="h-8 w-8" />,
-  },
-  {
-    name: "Tanvir Khan",
-    avatar: <AvatarIcon className="h-8 w-8" />,
-  },
-  {
-    name: "Tanvir Khan",
-    avatar: <AvatarIcon className="h-8 w-8" />,
-  },
-];
+// const liveUsers: AvatarWithTooltip[] = [
+//   {
+//     name: "Tanvir Khan",
+//     avatar: <AvatarIcon className="h-8 w-8" />,
+//   },
+//   {
+//     name: "Tanvir Khan",
+//     avatar: <AvatarIcon className="h-8 w-8" />,
+//   },
+//   {
+//     name: "Tanvir Khan",
+//     avatar: <AvatarIcon className="h-8 w-8" />,
+//   },
+// ];
 
 const ProjectDocsDetail = () => {
-  const { data: projectDocDetails, isLoading: isLoadingProjcetDocDetails } =
-    useQuery<ResponseType<RProjectDocDetailsType>>({
-      queryKey: [QueryKeys.GET_PROJECT_DOC_DETAILS],
-      queryFn: getProjectDocDetails,
-    });
+  const { user } = useUser();
+  const {
+    data: projectDocDetails,
+    isFetching: isLoadingProjcetDocDetails,
+    refetch: refetchProjectDetails,
+  } = useQuery<ResponseType<RProjectDocDetailsType>>({
+    queryKey: [QueryKeys.GET_PROJECT_DOC_DETAILS],
+    queryFn: getProjectDocDetails,
+  });
+
+  const { data: userData, isFetching: isLoadingUserData } = useQuery({
+    queryKey: [QueryKeys.GET_USER, user?.id],
+    queryFn: () => getUser(user ? user.id : ""),
+    staleTime: 1000 * 5 * 60,
+  });
+
+  const { mutate, isPending: isLoadingUpdateDoc } = useMutation({
+    mutationFn: updateProjectDoc,
+    onSuccess: () => {
+      setAlertType("Success");
+      setAlertMessage("Project document updated sucessfully.");
+      refetchProjectDetails();
+    },
+    onError: () => {
+      setAlertType("Error");
+      setAlertMessage("Error while updating project document.");
+    },
+  });
+
   const { projectdocsId } = useParams({ strict: false });
   const [formProjectName, setFormProjectName] = useState("");
   const [formSummary, setFormSummary] = useState("");
@@ -67,6 +75,16 @@ const ProjectDocsDetail = () => {
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | null
   >("");
+  const [technologies, setTechnologies] = useState<
+    {
+      id: string;
+      value: string;
+    }[]
+  >([]);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<"Success" | "Error" | "Warning">(
+    "Success"
+  );
 
   const handleContent = (content: string) => {
     setEditorContent(content);
@@ -76,6 +94,23 @@ const ProjectDocsDetail = () => {
     setIsEditable((ps) => !ps);
   };
   const handleUpdateButton = () => {
+    setAlertType("Warning");
+    if (!editorContent) {
+      return setAlertMessage("Project Docs can't be empty!");
+    }
+    if (!selectedImage) {
+      return setAlertMessage("Project Image can't be empty!");
+    }
+    if (!formProjectName) {
+      return setAlertMessage("Project Name can't be empty!");
+    }
+    if (!formSummary) {
+      return setAlertMessage("Project Summary can't be empty!");
+    }
+    if (!technologies.length) {
+      return setAlertMessage("Technologies can't be empty.");
+    }
+    mutate();
     setIsEditable((ps) => !ps);
   };
 
@@ -93,6 +128,22 @@ const ProjectDocsDetail = () => {
       `${Paths.GET_PROJECT_DOC_DETAILS}/${projectdocsId}`
     );
     return data;
+  }
+
+  async function updateProjectDoc() {
+    const res = await customFetch(
+      `${Paths.UPDATE_PROJECT_DOC}/${userData?.data.userId}`,
+      {
+        projectId: projectdocsId,
+        projectName: formProjectName,
+        summary: formSummary,
+        projectIcon: selectedImage,
+        document: editorContent,
+        tags: technologies,
+      },
+      "PUT"
+    );
+    return res;
   }
 
   const createUpdateDetails: InfoDisplayPropsType[] = [
@@ -121,11 +172,23 @@ const ProjectDocsDetail = () => {
     handleImageChange(projectDocDetails ? projectDocDetails.data.icon : "");
     setFormSummary(projectDocDetails ? projectDocDetails.data.summary : "");
     handleContent(projectDocDetails ? projectDocDetails.data.document : "");
+    setTechnologies(
+      projectDocDetails
+        ? projectDocDetails.data.Tags.map(({ Technologies }) => ({
+            id: Technologies.technologyId,
+            value: Technologies.technology,
+          }))
+        : []
+    );
   }, [projectDocDetails?.data]);
 
   return (
-    <Header isLoading={false}>
-      {
+    <Header
+      isLoading={
+        isLoadingProjcetDocDetails || isLoadingUserData || isLoadingUpdateDoc
+      }
+    >
+      {!isLoadingProjcetDocDetails ? (
         <Card
           title={
             <ProjectTitle
@@ -135,9 +198,7 @@ const ProjectDocsDetail = () => {
               }
             />
           }
-          description={
-            isEditable && <ProjectDocsDetailsDesc users={liveUsers} />
-          }
+          description={isEditable && <ProjectDocsDetailsDesc users={[]} />}
           action={
             isEditable ? (
               <Button content="Update" onClick={handleUpdateButton}>
@@ -169,10 +230,23 @@ const ProjectDocsDetail = () => {
                     }))
                   : []
               }
+              handleTechnologies={setTechnologies}
+              selectedTechnologies={technologies}
             />
           }
         />
-      }
+      ) : (
+        <Skeleton className="max-w-5xl w-full h-[50vh]" />
+      )}
+      {alertMessage && (
+        <Alert
+          title={alertType}
+          type={alertType}
+          description={alertMessage}
+          variant="default"
+          setAlertMessage={setAlertMessage}
+        />
+      )}
     </Header>
   );
 };

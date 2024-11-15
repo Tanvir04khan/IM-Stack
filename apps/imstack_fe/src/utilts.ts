@@ -1,4 +1,4 @@
-import { TotalActivities } from "./enum";
+import { Paths, TotalActivities } from "./enum";
 import {
   FileQuestion,
   FolderSync,
@@ -6,7 +6,15 @@ import {
   Vote,
   Eye,
 } from "lucide-react";
-import { NavItemsType, TotalActivitiesType } from "./type";
+import {
+  NavItemsType,
+  ProjectTagsType,
+  ResponseType,
+  RQuestionsType,
+  RUserType,
+  TechnologiesType,
+  TotalActivitiesType,
+} from "./type";
 import { ActivityPropsType } from "./components/Activity";
 
 export const navItems: NavItemsType[] = [
@@ -93,3 +101,35 @@ export const customFetch = async (
   }
   return response.json();
 };
+
+//
+export async function getQuestions(
+  userId: string,
+  limit?: number
+): Promise<ResponseType<RQuestionsType>> {
+  const data = await customFetch(
+    `${Paths.GET_QUESTIONS}/${userId}${limit ? `?limit=${limit}` : ""}`
+  );
+  return data;
+}
+
+export async function getUser(
+  clerkUserId: string
+): Promise<ResponseType<RUserType>> {
+  const data = await customFetch(`${Paths.GET_USER}/${clerkUserId}`);
+  return data;
+}
+
+export async function getTechnologies(): Promise<
+  ResponseType<TechnologiesType[]>
+> {
+  const data = await customFetch(`${Paths.GET_TECHNOLOGIES}`);
+  return data;
+}
+
+export async function getProjectTags(): Promise<
+  ResponseType<ProjectTagsType[]>
+> {
+  const data = await customFetch(`${Paths.GET_PROJECT_TAGS}`);
+  return data;
+}

@@ -71,6 +71,47 @@ export type ProjectsType = {
   technologies: { technologyId: string; technology: string }[];
 };
 
+export type CommentsType = {
+  commentId: string;
+  comment: string;
+  commentedOn: string;
+  userId: string;
+  type: string;
+  questionId: string;
+  answerId: string;
+  User: RUsersType;
+};
+
+export type VotesType = {
+  voteId: string;
+  vote: number;
+  type: string;
+  answerId: string;
+  questionId: string;
+};
+
+export type AnswerType = {
+  answerId: string;
+  answer: string;
+  answeredOn: string;
+  userId: string;
+  questionId: string;
+  acceptedAsBest: boolean;
+  Comments: CommentsType[];
+  Votes: VotesType[];
+  Users: RUsersType;
+};
+
+export type TechnologiesType = {
+  technologyId: string;
+  technology: string;
+};
+
+export type ProjectTagsType = {
+  projectId: string;
+  projectName: string;
+};
+
 export type ResponseType<T> = {
   status: "success" | "error";
   message: string;
@@ -84,7 +125,7 @@ export type RUserType = {
   emailId: string;
   image: string | null;
   clerkUserID: string;
-  UserRoles: {
+  UsersRoles: {
     Roles: { roleId: string; role: string };
     Projects: { projectId: string; projectName: string } | null;
   }[];
@@ -112,9 +153,7 @@ export type RProjectDocsType = {
 export type RQuestionsType = {
   questionId: string;
   title: string;
-  question: string;
   views: number;
-  askedOn: string;
   userId: string;
   Answers: { count: number; hasAcceptedBestAnswer: boolean };
   Tags: {
@@ -125,6 +164,8 @@ export type RQuestionsType = {
     firstName: string;
     lastName: string;
     userId: string;
+    image: string;
+    imageType: string;
   };
   Votes: number;
 }[];
@@ -148,4 +189,33 @@ export type RProjectDocDetailsType = {
   document: string;
   icon: string;
   Tags: { Technologies: { technologyId: string; technology: string } }[];
+};
+
+export type RUsersType = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  image: string;
+  clerkUserID: string;
+  imageType: string;
+  joinedOn: string;
+};
+
+export type RQuestionDetails = {
+  questionId: string;
+  title: string;
+  question: string;
+  views: number;
+  askedOn: string;
+  modifiedOn: string;
+  userId: string;
+  Users: RUsersType;
+  Answers: AnswerType[];
+  Tags: {
+    techTags: { technologyId: string; technology: string }[];
+    projectTags: { projectId: string; projectsName: string }[];
+  };
+  Comments: CommentsType[];
+  Votes: VotesType[];
 };

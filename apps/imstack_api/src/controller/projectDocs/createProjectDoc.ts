@@ -7,9 +7,17 @@ import {
   ResponseStatus,
   Score,
   SuccesMessage,
+  TagsTagType,
+  TagsType,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { Projects, Rewards, Users, UsersRoles } from "../../database/schema";
+import {
+  Projects,
+  Rewards,
+  Tags,
+  Users,
+  UsersRoles,
+} from "../../database/schema";
 import { eq, sql } from "drizzle-orm";
 import { Roles as uRoles } from "../../utils/enums";
 
@@ -18,10 +26,18 @@ const createProjectDoc = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { projectName, summary, projectIcon, document } = req.body;
+  const { projectName, summary, projectIcon, document, tags } = req.body;
   const { userId } = req.params;
   try {
-    if (!projectName || !summary || !projectIcon || !document || !userId) {
+    if (
+      !projectName ||
+      !summary ||
+      !projectIcon ||
+      !document ||
+      !userId ||
+      !tags ||
+      !tags.length
+    ) {
       throw new NodeError(
         ErrorMessage.PROJECT_POST_DETAILS,
         APIStatusCode.BAD_REQUEST,
@@ -69,6 +85,19 @@ const createProjectDoc = async (
       userId,
       projectId: result[0].projectId,
     });
+
+    const tagsToBeAdded = [];
+
+    for (const tag of tags) {
+      tagsToBeAdded.push({
+        tagType: TagsTagType.TECHNOLOGY,
+        type: TagsType.PROJECT,
+        projectId: result[0].projectId,
+        technologyId: tag.id,
+      });
+    }
+
+    await database.insert(Tags).values(tagsToBeAdded);
 
     if (!result.length) {
       throw new NodeError(

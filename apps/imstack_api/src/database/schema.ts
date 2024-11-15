@@ -27,6 +27,7 @@ export const Users = pgTable("Users", {
   image: customBytea("image"),
   clerkUserID: text("clerkUserId").notNull(),
   imageType: varchar("imageType", { length: 200 }),
+  joinedOn: timestamp("joinedOn").notNull().defaultNow(),
 });
 
 export const Projects = pgTable("Projects", {
@@ -63,6 +64,10 @@ export const Questions = pgTable("Questions", {
   userId: uuid("userId")
     .references((): AnyPgColumn => Users.userId)
     .notNull(),
+  modifiedOn: timestamp("modifiedOn")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const Answers = pgTable("Answers", {

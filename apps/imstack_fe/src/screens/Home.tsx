@@ -13,7 +13,13 @@ import {
   QuestionsColumn,
   TotalActivities,
 } from "@/enum";
-import { customFetch, questionActivities, totalActivities } from "@/utilts";
+import {
+  customFetch,
+  getQuestions,
+  getUser,
+  questionActivities,
+  totalActivities,
+} from "@/utilts";
 import ActivityCard from "@/components/ActivityCard";
 import {
   TableColumnsType,
@@ -138,7 +144,8 @@ const Home = () => {
   //User
   const { data: userdetails, isLoading } = useQuery<ResponseType<RUserType>>({
     queryKey: [QueryKeys.GET_USER],
-    queryFn: getUser,
+    queryFn: () => getUser(user ? user?.id : ""),
+    staleTime: 1000 * 5 * 60,
   });
 
   //Activities
@@ -164,7 +171,7 @@ const Home = () => {
     ResponseType<RQuestionsType>
   >({
     queryKey: [QueryKeys.GET_QUESTIONS, userdetails?.data.userId],
-    queryFn: getQuestions,
+    queryFn: () => getQuestions(userdetails ? userdetails?.data.userId : "", 5),
     enabled: !!userdetails,
   });
 
@@ -175,21 +182,9 @@ const Home = () => {
     return data;
   }
 
-  async function getUser(): Promise<ResponseType<RUserType>> {
-    const data = await customFetch(`${Paths.GET_USER}/${user?.id}`);
-    return data;
-  }
-
   async function getProjectDocs(): Promise<ResponseType<RProjectDocsType>> {
     const data = await customFetch(
       `${Paths.GET_PROJECT_DOCS}/${userdetails?.data.userId}?limit=5`
-    );
-    return data;
-  }
-
-  async function getQuestions(): Promise<ResponseType<RQuestionsType>> {
-    const data = await customFetch(
-      `${Paths.GET_QUESTIONS}/${userdetails?.data.userId}?limit=5`
     );
     return data;
   }

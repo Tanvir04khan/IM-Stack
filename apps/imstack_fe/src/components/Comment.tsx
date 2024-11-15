@@ -23,8 +23,8 @@ const Comment = ({ comments, onPostComment }: CommentPropsType) => {
       title="Comments"
       content={
         <div className="w-full max-h-[85vh] overflow-y-scroll hide-scrollbar flex flex-col items-center gap-2 ">
-          {comments.map((comment, i) => (
-            <CommentCard key={i} {...comment} />
+          {comments.map((comment) => (
+            <CommentCard key={comment.commentId} {...comment} />
           ))}
         </div>
       }

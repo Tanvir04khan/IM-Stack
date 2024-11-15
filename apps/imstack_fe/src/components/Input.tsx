@@ -9,6 +9,7 @@ type InputPropsType = {
   placeholder?: string;
   accept?: string;
   className?: string;
+  isMandatory?: boolean;
   value?: string | undefined | number | readonly string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -22,11 +23,15 @@ const Input = ({
   placeholder,
   disabled,
   className,
+  isMandatory,
 }: InputPropsType) => {
   return (
     <div className={"flex flex-col gap-2 " + className}>
-      <Label>{lable}</Label>
+      <Label>
+        {lable} {isMandatory && "*"}
+      </Label>
       <SCNInput
+        required={isMandatory}
         className="border rounded-md px-3 py-2 w-full"
         placeholder={placeholder}
         type={type}

@@ -131,3 +131,7 @@
     transform: rotateX(240deg) rotateY(45deg) rotateZ(360deg);
   }
 }
+
+.jodit-react-container {
+  width: 100%;
+}

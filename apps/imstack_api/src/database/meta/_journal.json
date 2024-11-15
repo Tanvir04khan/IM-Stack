@@ -36,6 +36,20 @@
       "when": 1730546857445,
       "tag": "0004_yielding_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1731399110583,
+      "tag": "0005_lying_white_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1731404881872,
+      "tag": "0006_nervous_jasper_sitwell",
+      "breakpoints": true
     }
   ]
 }

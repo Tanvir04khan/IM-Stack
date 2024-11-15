@@ -4,12 +4,14 @@ import JoditEditor from "jodit-react";
 type TextEditorPropsType = {
   placeholder: string;
   value: string;
+  className?: string;
   handleContent: (content: string) => void;
 };
 
 const TextEditor = ({
   placeholder,
   handleContent,
+  className,
   value,
 }: TextEditorPropsType) => {
   const editor = useRef(null);
@@ -51,7 +53,7 @@ const TextEditor = ({
   return (
     <>
       <JoditEditor
-        className="w-auto"
+        className={"w-auto " + className}
         ref={editor}
         value={value}
         config={config}

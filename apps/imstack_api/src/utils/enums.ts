@@ -68,6 +68,8 @@ export enum SuccesMessage {
   GET_USER_DETAILS = "User details found.",
   UPDATE_USER_DETAILS = "User details updated successfully.",
   ADD_VOTE = "Vote added successfully.",
+  GET_TECH = "Technologies found.",
+  GET_PROJECTTAGS = "Project tags found.",
 }
 
 export enum TagsType {

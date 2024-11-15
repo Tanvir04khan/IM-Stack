@@ -11,6 +11,7 @@ import userRouter from "./routes/user";
 import voteRoter from "./routes/vote";
 import errorHandler from "./controller/errorHandler";
 import activityRoter from "./routes/activity";
+import technologyRoter from "./routes/technology";
 
 export const createServer = (): Server => {
   const app = express();
@@ -19,7 +20,7 @@ export const createServer = (): Server => {
     .disable("x-powered-by")
     .use(morgan("dev"))
     .use(urlencoded({ extended: true }))
-    .use(json())
+    .use(json({ limit: "50mb" }))
     .use(cors())
     .get("/message/:name", (req, res) => {
       return res.json({ message: `hello ${req.params.name}` });
@@ -48,6 +49,9 @@ export const createServer = (): Server => {
 
   //Vote
   app.use(voteRoter);
+
+  //Technology
+  app.use(technologyRoter);
 
   //Error handler
   app.use(errorHandler);

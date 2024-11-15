@@ -32,6 +32,10 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
+    const userImage = image.split(",");
+
+    const bImage = Buffer.from(userImage[1], "base64");
+
     const result = await database
       .insert(Users)
       .values({
@@ -39,6 +43,8 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
         emailId,
         firstName,
         lastName,
+        image: bImage,
+        imageType: userImage[0],
       })
       .returning({ userId: Users.userId });
 

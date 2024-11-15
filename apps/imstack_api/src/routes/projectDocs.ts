@@ -3,6 +3,7 @@ import createProjectDoc from "../controller/projectDocs/createProjectDoc";
 import updateProjectDoc from "../controller/projectDocs/updateProjectDoc";
 import getProjectDocs from "../controller/projectDocs/getProjectDocs";
 import getProjectDocDetails from "../controller/projectDocs/getProjectDocDetails";
+import getProjectTags from "../controller/projectDocs/getProjectTags";
 
 const projectDocsRouter = Router();
 
@@ -25,5 +26,7 @@ projectDocsRouter.put(
   "/update-projectdoc/:userId",
   updateProjectDoc as RequestHandler
 );
+
+projectDocsRouter.get("/get-projecttags", getProjectTags as RequestHandler);
 
 export default projectDocsRouter;

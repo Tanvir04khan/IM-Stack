@@ -42,6 +42,11 @@ const getQuestions = async (
     }
 
     const questions = await database.query.Questions.findMany({
+      columns: {
+        title: true,
+        questionId: true,
+        views: true,
+      },
       with: {
         Answers: true,
         Tags: {
@@ -56,6 +61,8 @@ const getQuestions = async (
             firstName: true,
             lastName: true,
             userId: true,
+            image: true,
+            imageType: true,
           },
         },
         Votes: true,
@@ -89,7 +96,7 @@ const getQuestions = async (
         projectTags: data.Tags?.filter((tag) => tag.Projects)?.map(
           ({ Projects }) => ({
             projectId: Projects?.projectId,
-            ProjectsName: Projects?.projectName,
+            projectName: Projects?.projectName,
           })
         ),
       },

@@ -1,0 +1,1 @@
+ALTER TABLE "Users" ADD COLUMN "joinedOn" timestamp DEFAULT now() NOT NULL;

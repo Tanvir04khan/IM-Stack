@@ -25,7 +25,7 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
           ? CommentType.ANSWER
           : "";
   try {
-    if (!userId || !vote || !voteType) {
+    if (!userId || !voteType) {
       throw new NodeError(
         ErrorMessage.ADD_VOTE,
         APIStatusCode.BAD_REQUEST,
@@ -36,7 +36,8 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
     const user = await database.query.Users.findFirst({
       where: (Users, { inArray }) => inArray(Users.userId, [userId]),
     });
-    if (user) {
+    console.log(user, "from Add vote ......................");
+    if (!user) {
       throw new NodeError(
         ErrorMessage.ACTIVITIES_USER,
         APIStatusCode.NOT_FOUND,
@@ -76,6 +77,7 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
           userId,
           answerId: voteType === CommentType.ANSWER ? answerId : null,
           questionId: voteType === CommentType.QUESTION ? questionId : null,
+          vote: vote ? VoteValue.POSITIVE : VoteValue.NEGATIVE,
         })
         .returning({ voteId: Votes.voteId });
     }
