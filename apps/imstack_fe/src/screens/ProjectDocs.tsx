@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Paths, QueryKeys } from "@/enum";
 import { customFetch } from "@/utilts";
 import { Skeleton } from "@/components/ui/skeleton";
+import ProfileCard from "@/components/ProfileCard";
 
 const ProjectDocs = () => {
   const navigation = useNavigate();
@@ -46,12 +47,14 @@ const ProjectDocs = () => {
 
   const projectDocs: ProjectsType[] = projectData
     ? projectData?.data.map(
-        ({ projectId, projectName, icon, summary, Tags }) => ({
+        ({ projectId, projectName, icon, summary, Tags, modifiedOn }) => ({
           projectId,
           projectName,
           icon,
           summary,
+
           technologies: Tags.map(({ Technologies }) => Technologies),
+          modifiedOn: modifiedOn.split("T")[0],
         })
       )
     : [];
@@ -83,41 +86,61 @@ const ProjectDocs = () => {
           </div>
           <div className="w-full flex flex-col gap-4">
             {!isLoadingProjectData ? (
-              projectDocs.map(
-                ({ projectId, projectName, icon, summary, technologies }) => (
-                  // <ProjectCard key={name} image={image} name={name} id={id} />
-                  <Card
-                    onClick={() =>
-                      navigation({
-                        from: "/projectdocs",
-                        to: `/projectdocs/${projectId}`,
-                      })
-                    }
-                    className="hover:shadow-lg duration-100 cursor-pointer"
-                    key={projectId}
-                    title={
-                      <ProjectTitle
-                        className="text-2xl"
-                        ProjectName={projectName}
-                        imageSrc={icon}
-                      />
-                    }
-                    content={
-                      <div className="w-full flex flex-col gap-4">
-                        <div>
-                          {summary.length > 200
-                            ? `${summary.slice(0, 140)}...`
-                            : summary}
+              projectDocs.length ? (
+                projectDocs.map(
+                  ({
+                    projectId,
+                    projectName,
+                    icon,
+                    summary,
+                    technologies,
+                    modifiedOn,
+                  }) => (
+                    // <ProjectCard key={name} image={image} name={name} id={id} />
+                    <Card
+                      onClick={() =>
+                        navigation({
+                          from: "/projectdocs",
+                          to: `/projectdocs/${projectId}`,
+                        })
+                      }
+                      className="hover:shadow-lg duration-100 cursor-pointer"
+                      key={projectId}
+                      title={
+                        <ProjectTitle
+                          className="text-2xl"
+                          ProjectName={projectName}
+                          imageSrc={icon}
+                        />
+                      }
+                      content={
+                        <div className="w-full flex flex-col gap-4">
+                          <div>
+                            {summary.length > 200
+                              ? `${summary.slice(0, 140)}...`
+                              : summary}
+                          </div>
+                          <div className="w-full flex flex-row gap-1">
+                            {technologies.map(
+                              ({ technology, technologyId }) => (
+                                <Tag key={technologyId} content={technology} />
+                              )
+                            )}
+                          </div>
                         </div>
-                        <div className="w-full flex flex-row gap-1">
-                          {technologies.map(({ technology, technologyId }) => (
-                            <Tag key={technologyId} content={technology} />
-                          ))}
+                      }
+                      action={
+                        <div className="w-max-content text-muted-foreground">
+                          {modifiedOn}
                         </div>
-                      </div>
-                    }
-                  />
+                      }
+                    />
+                  )
                 )
+              ) : (
+                <div className="w-full max-w-5xl text-muted-foreground">
+                  No data found.
+                </div>
               )
             ) : (
               <>

@@ -33,6 +33,7 @@ export enum ErrorMessage {
   QUESTION_ADD_DETAILS = "Please provide valid question details.",
   QUESTION_UPDATE_DETAILS = "Please provide valid update details.",
   QUESTION_UPDATE_CHECK = "Either question not found or this user doesn't have access to update this question.",
+  QUESTION_UPDATE_VIEWS = "Question not found.",
   GET_QUESTION_DETAILS = "Please provide valid questionId.",
   ANSWER_POST_DETAILS = "Please provide valid answer details.",
   ANSWER_QUESTION = "Question not found. Please provide valid questionId.",
@@ -47,6 +48,8 @@ export enum ErrorMessage {
   UPDATE_USER_DETAILS = "Please provide valid user details.",
   UPDATE_USER_DETAILS_RES = "Either you don't have the role to update this user or something went wrong while updation.",
   ADD_VOTE = "Please provide valid vote details.",
+  ACCEPT_AS_BEST_ANSWER = "Please provide valid details.",
+  ACCEPT_AS_BEST_ANSWER_USER = "You don't have right.",
 }
 
 export enum SuccesMessage {

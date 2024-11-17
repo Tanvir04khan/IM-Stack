@@ -31,10 +31,12 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
         ErrorCode.INVALID_REQUEST
       );
     }
+    let userImage, bImage;
+    if (image) {
+      userImage = image.split(",");
 
-    const userImage = image.split(",");
-
-    const bImage = Buffer.from(userImage[1], "base64");
+      bImage = Buffer.from(userImage[1], "base64");
+    }
 
     const result = await database
       .insert(Users)
@@ -43,8 +45,8 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
         emailId,
         firstName,
         lastName,
-        image: bImage,
-        imageType: userImage[0],
+        image: bImage ? bImage : null,
+        imageType: userImage && userImage.length ? userImage[0] : null,
       })
       .returning({ userId: Users.userId });
 

@@ -61,6 +61,7 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
                 eq(Votes.answerId, answerId)
               ),
     });
+
     if (userVote) {
       result = await database
         .update(Votes)
@@ -88,8 +89,8 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
         ErrorCode.SERVER_ERROR
       );
     }
-
-    res.send(APIStatusCode.OK).json({
+    console.log(result[0].voteId, "voteId........................");
+    res.json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.ADD_VOTE,
       data: { voteId: result[0].voteId },

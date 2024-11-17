@@ -46,6 +46,7 @@ const getQuestions = async (
         title: true,
         questionId: true,
         views: true,
+        askedOn: true,
       },
       with: {
         Answers: true,

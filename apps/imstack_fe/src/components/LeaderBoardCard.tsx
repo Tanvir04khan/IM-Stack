@@ -4,9 +4,9 @@ import { Award } from "lucide-react";
 import { AvatarIcon } from "@radix-ui/react-icons";
 
 export type LeaderBoardCardPropsType = {
-  image: string;
+  image?: string;
   name: string;
-  emailId: string;
+  emailId?: string;
   rewardPoints: number;
 };
 

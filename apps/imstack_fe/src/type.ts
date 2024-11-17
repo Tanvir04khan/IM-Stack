@@ -69,6 +69,8 @@ export type ProjectsType = {
   projectId: string;
   summary: string;
   technologies: { technologyId: string; technology: string }[];
+  createdBy?: string;
+  modifiedOn: string;
 };
 
 export type CommentsType = {
@@ -155,6 +157,7 @@ export type RQuestionsType = {
   title: string;
   views: number;
   userId: string;
+  askedOn: string;
   Answers: { count: number; hasAcceptedBestAnswer: boolean };
   Tags: {
     techTags: { technologyId: string; technology: string }[];
@@ -214,7 +217,7 @@ export type RQuestionDetails = {
   Answers: AnswerType[];
   Tags: {
     techTags: { technologyId: string; technology: string }[];
-    projectTags: { projectId: string; projectsName: string }[];
+    projectTags: { projectId: string; projectName: string }[];
   };
   Comments: CommentsType[];
   Votes: VotesType[];

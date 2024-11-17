@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useUser } from "@clerk/clerk-react";
 import Header from "@/components/Header";
@@ -38,7 +38,7 @@ import Card from "@/components/Card";
 import QuestionActivity from "@/components/QuestionActivity";
 import Question from "@/components/Question";
 import ProjectTitle from "@/components/ProjectTitle";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type ActivitiesType = {
@@ -149,9 +149,11 @@ const Home = () => {
   });
 
   //Activities
-  const { data: activitiesdata, isLoading: isLoadingActivities } = useQuery<
-    ResponseType<RActivitiesType>
-  >({
+  const {
+    data: activitiesdata,
+    isLoading: isLoadingActivities,
+    refetch: refetchUser,
+  } = useQuery<ResponseType<RActivitiesType>>({
     queryKey: [QueryKeys.GET_ACTIVITIES, userdetails?.data.userId],
     queryFn: getActivities,
     enabled: !!userdetails,
@@ -175,6 +177,16 @@ const Home = () => {
     enabled: !!userdetails,
   });
 
+  const { mutate: addUserMutate } = useMutation({
+    mutationFn: addUser,
+    onSuccess: () => {
+      refetchUser();
+    },
+    onError: () => {
+      refetchUser();
+    },
+  });
+
   async function getActivities(): Promise<ResponseType<RActivitiesType>> {
     const data = await customFetch(
       `${Paths.GET_ACTIVITIES}/${userdetails?.data.userId}`
@@ -188,6 +200,24 @@ const Home = () => {
     );
     return data;
   }
+
+  async function addUser() {
+    const res = await customFetch(
+      `${Paths.ADD_USER}`,
+      {
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        emailId: user?.emailAddresses[0].emailAddress,
+        clerkUserId: user?.id,
+      },
+      "POST"
+    );
+    return res;
+  }
+
+  useEffect(() => {
+    addUserMutate();
+  }, [user]);
 
   const activitiesValues: ActivitiesType = {
     [TotalActivities.TOTALPROJECTS]: activitiesdata?.data.totalProjects,
@@ -220,25 +250,11 @@ const Home = () => {
 
   const questionRows: QuestionsRowsType[] = questions
     ? questions?.data.map(
-        ({
-          Answers,
-          title,
-          question,
-          askedOn,
-          views,
-          Users,
-          Votes,
-          questionId,
-        }) => ({
+        ({ Answers, title, askedOn, views, Users, Votes, questionId }) => ({
           title: (
             <Question
-              title={title}
-              description={
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: question.substring(0, 30) + "....",
-                  }}
-                />
+              title={
+                title.length > 30 ? title.substring(0, 30) + "...." : title
               }
             />
           ),
@@ -287,6 +303,7 @@ const Home = () => {
           </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-2 ">
             <Card
+              className="min-h-96"
               title="Projects"
               description="Recently created/updated projects."
               action={

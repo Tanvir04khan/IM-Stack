@@ -9,17 +9,14 @@ import {
 } from "../../utils/enums";
 import { database } from "../../database/connection";
 import { Questions } from "../../database/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
-const updateQuestion = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { question, questionId, views } = req.body;
+const updateViews = async (req: Request, res: Response, next: NextFunction) => {
+  const { questionId, views } = req.body;
   const { userId } = req.params;
+  console.log(questionId, userId, views, "from.........");
   try {
-    if (!question || !questionId || !userId) {
+    if (!questionId || !views || !userId) {
       throw new NodeError(
         ErrorMessage.QUESTION_UPDATE_DETAILS,
         APIStatusCode.BAD_REQUEST,
@@ -30,14 +27,12 @@ const updateQuestion = async (
     const questionDb = await database
       .select()
       .from(Questions)
-      .where(
-        and(eq(Questions.questionId, questionId), eq(Questions.userId, userId))
-      )
+      .where(and(eq(Questions.questionId, questionId)))
       .limit(1);
 
     if (!questionDb.length) {
       throw new NodeError(
-        ErrorMessage.QUESTION_UPDATE_CHECK,
+        ErrorMessage.QUESTION_UPDATE_VIEWS,
         APIStatusCode.NOT_FOUND,
         ErrorCode.INVALID_DATA
       );
@@ -46,7 +41,7 @@ const updateQuestion = async (
     const questionInsertResult = await database
       .update(Questions)
       .set({
-        question,
+        views: sql`${Questions.views} + 1`,
       })
       .where(eq(Questions.questionId, questionId))
       .returning();
@@ -69,4 +64,4 @@ const updateQuestion = async (
   }
 };
 
-export default updateQuestion;
+export default updateViews;

@@ -26,6 +26,11 @@ export enum UsersColumn {
   JOINEDON = "joinedOn",
 }
 
+export enum VoteType {
+  QUESTION = "question",
+  ANSWER = "answer",
+}
+
 export enum QueryKeys {
   GET_USER = "getUser",
   GET_USERS = "getUsers",
@@ -39,6 +44,14 @@ export enum QueryKeys {
   UPDATE_PROJECT_DOC = "updateProjectDoc",
   GET_PROJECT_TAGS = "getProjectTags",
   ADD_QUESTION = "addQuestion",
+  UPDATE_QUESTION = "updateQuestion",
+  UPDATE_VIEWS = "updateViews",
+  POST_ANSWER = "postAnswer",
+  ADD_VOTE = "addVote",
+  UPDATE_ANSWER = "updateAnswer",
+  ACCEP_AS_BEST_ANSWER = "acceptAsBestAnswer",
+  POST_COMMENT = "postComment",
+  ADD_USER = "addUser",
 }
 
 export enum Paths {
@@ -54,4 +67,12 @@ export enum Paths {
   UPDATE_PROJECT_DOC = "/update-projectdoc",
   GET_PROJECT_TAGS = "/get-projecttags",
   ADD_QUESTION = "/add-question",
+  UPDATE_QUESTION = "/update-question",
+  UPDATE_VIEWS = "/update-views",
+  POST_ANSWER = "/add-answer",
+  ADD_VOTE = "/add-vote",
+  UPDATE_ANSWER = "/update-answer",
+  ACCEP_AS_BEST_ANSWER = "/acceptasbest-answer",
+  POST_COMMENT = "/add-comment",
+  ADD_USER = "/add-user",
 }

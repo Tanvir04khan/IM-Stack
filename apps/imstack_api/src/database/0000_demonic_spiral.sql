@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS "Comments" (
 	"commentedOn" timestamp DEFAULT now() NOT NULL,
 	"userId" uuid NOT NULL,
 	"type" varchar(50) NOT NULL,
-	"questionId" uuid NOT NULL,
-	"answerId" uuid NOT NULL
+	"questionId" uuid,
+	"answerId" uuid
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Projects" (
@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS "Questions" (
 	"question" text NOT NULL,
 	"views" integer NOT NULL,
 	"askedOn" timestamp DEFAULT now() NOT NULL,
-	"userId" uuid NOT NULL
+	"userId" uuid NOT NULL,
+	"modifiedOn" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Rewards" (
@@ -54,9 +55,9 @@ CREATE TABLE IF NOT EXISTS "Tags" (
 	"tagId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"type" varchar(50) NOT NULL,
 	"tagType" varchar(50) NOT NULL,
-	"projectId" uuid NOT NULL,
-	"questionId" uuid NOT NULL,
-	"technologyId" uuid NOT NULL
+	"projectId" uuid,
+	"questionId" uuid,
+	"technologyId" uuid
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Technologies" (
@@ -77,7 +78,8 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"emailId" varchar(200) NOT NULL,
 	"image" "bytea",
 	"clerkUserId" text NOT NULL,
-	"imageType" varchar(200)
+	"imageType" varchar(200),
+	"joinedOn" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "UsersRoles" (
@@ -91,8 +93,8 @@ CREATE TABLE IF NOT EXISTS "Votes" (
 	"voteId" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"vote" smallint,
 	"type" varchar(50) NOT NULL,
-	"answerId" uuid NOT NULL,
-	"questionId" uuid NOT NULL,
+	"answerId" uuid,
+	"questionId" uuid,
 	"userId" uuid NOT NULL
 );
 --> statement-breakpoint

@@ -7,7 +7,7 @@ import getUser from "../controller/user/getUser";
 
 const userRouter = Router();
 
-userRouter.post("/add-users", addUser as RequestHandler);
+userRouter.post("/add-user", addUser as RequestHandler);
 
 userRouter.get("/get-user/:clerkUserId", getUser as RequestHandler);
 

@@ -42,33 +42,39 @@ const Table = ({ columns, rows, isSelectable }: TablePropsType) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {rows.map((item, i) => (
-          <TableRow
-            key={i}
-            onClick={() => {
-              item.onClick(item);
-            }}
-          >
-            {isSelectable && (
-              <TableCell>
-                <Checkbox
-                  checked={false}
-                  onCheckedChange={(value) => {}}
-                  aria-label="Select all"
-                />
-              </TableCell>
-            )}
-            {columns.map(({ field, textAlignment }) => (
-              <TableCell
-                className={
-                  "font-" + textAlignment + " font-medium whitespace-nowrap"
-                }
-              >
-                {item[field]}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
+        {rows.length ? (
+          rows.map((item, i) => (
+            <TableRow
+              key={i}
+              onClick={() => {
+                item.onClick(item);
+              }}
+            >
+              {isSelectable && (
+                <TableCell>
+                  <Checkbox
+                    checked={false}
+                    onCheckedChange={(value) => {}}
+                    aria-label="Select all"
+                  />
+                </TableCell>
+              )}
+              {columns.map(({ field, textAlignment }) => (
+                <TableCell
+                  className={
+                    "font-" + textAlignment + " font-medium whitespace-nowrap"
+                  }
+                >
+                  {item[field]}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <div className="w-full text-center text-muted-foreground">
+            No data found.
+          </div>
+        )}
       </TableBody>
     </STable>
   );

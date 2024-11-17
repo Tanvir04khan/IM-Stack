@@ -1,5 +1,5 @@
 {
-  "id": "6e145692-f159-4e6c-ba5e-d21b2dbeda30",
+  "id": "8a868e49-2620-4a11-a5e0-62e700564725",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -119,13 +119,13 @@
           "name": "questionId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "answerId": {
           "name": "answerId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -314,6 +314,13 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "modifiedOn": {
+          "name": "modifiedOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -428,19 +435,19 @@
           "name": "projectId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "questionId": {
           "name": "questionId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "technologyId": {
           "name": "technologyId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -613,6 +620,13 @@
           "type": "varchar(200)",
           "primaryKey": false,
           "notNull": false
+        },
+        "joinedOn": {
+          "name": "joinedOn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -722,13 +736,13 @@
           "name": "answerId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "questionId": {
           "name": "questionId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "userId": {
           "name": "userId",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Activity from "@/components/Activity";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -26,14 +26,17 @@ import {
 import imstackImage from "../images/authpageimage.png";
 import ProjectTitle from "@/components/ProjectTitle";
 import ProfileCard from "@/components/ProfileCard";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ResponseType, RQuestionDetails, RUserType } from "@/type";
-import { Paths, QueryKeys } from "@/enum";
-import { customFetch } from "@/utilts";
+import { Paths, QueryKeys, VoteType } from "@/enum";
+import { customFetch, getUser } from "@/utilts";
 import { useParams } from "@tanstack/react-router";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
 import { cn } from "@/lib/utils";
+import Tag from "@/components/Tag";
+import Alert from "@/components/Alert";
+import { comment } from "postcss";
 
 const QuestionDetails = () => {
   const [myQuestion, setMyQuestion] = useState("");
@@ -41,13 +44,127 @@ const QuestionDetails = () => {
   const [answer, setAnswer] = useState("");
   const [isEditQuestionClicked, setIsEditQuestionClicked] = useState(false);
   const [isEditAnswerClicked, setIsEditAnswerClicked] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<"Success" | "Error" | "Warning">(
+    "Success"
+  );
   const { questionId } = useParams({ strict: false });
   const { user } = useUser();
 
-  const { data: questionDetails, isFetching: isQuestionDetailsLoading } =
-    useQuery<ResponseType<RQuestionDetails>>({
-      queryKey: [QueryKeys.GET_QUESTION_DETAILS],
-      queryFn: getQuestionDetails,
+  const { data: userData, isFetching: isLoadingUserData } = useQuery({
+    queryKey: [QueryKeys.GET_USER, user?.id],
+    queryFn: () => getUser(user ? user.id : ""),
+    staleTime: 1000 * 5 * 60,
+  });
+
+  const {
+    data: questionDetails,
+    isFetching: isQuestionDetailsLoading,
+    refetch: refetchQuestionDetails,
+  } = useQuery<ResponseType<RQuestionDetails>>({
+    queryKey: [QueryKeys.GET_QUESTION_DETAILS],
+    queryFn: getQuestionDetails,
+  });
+
+  const { mutate: updateQuestionMutate, isPending: isLoadingUpdateQuestion } =
+    useMutation({
+      mutationFn: updateQuestion,
+      onSuccess: () => {
+        setAlertType("Success");
+        setAlertMessage("Question updated succesfully!");
+        refetchQuestionDetails();
+      },
+      onError: () => {
+        setAlertType("Error");
+        setAlertMessage("Error while updating question!");
+      },
+    });
+
+  const { mutate: updateViewsMutate } = useMutation({
+    mutationFn: updateViews,
+  });
+
+  const { mutate: postAnswerMutate, isPending: isLoadingPostAnswer } =
+    useMutation({
+      mutationFn: postAnswer,
+      onSuccess: () => {
+        setAlertType("Success");
+        setAlertMessage("Answer posted succesfully!");
+        refetchQuestionDetails();
+        setAnswer("");
+      },
+      onError: () => {
+        setAlertType("Error");
+        setAlertMessage("Error while posting answer!");
+      },
+    });
+
+  const { mutate: addVoteMutate } = useMutation({
+    mutationFn: (payload: {
+      type: VoteType;
+      vote: boolean;
+      answerId?: string;
+    }) => addVote(payload.type, payload.vote, payload.answerId),
+    mutationKey: [QueryKeys.ADD_VOTE],
+    onSuccess: () => {
+      setAlertType("Success");
+      setAlertMessage("Vote added succesfully!");
+      refetchQuestionDetails();
+    },
+    onError: () => {
+      setAlertType("Error");
+      setAlertMessage("Error while adding vote!");
+    },
+  });
+
+  const { mutate: updateAnswerMutate, isPending: isLoadongUpdateAnswer } =
+    useMutation({
+      mutationFn: (payload: { answerId: string }) =>
+        updateAnswer(payload.answerId),
+      onSuccess: () => {
+        setAlertType("Success");
+        setAlertMessage("Answer updated succesfully!");
+        refetchQuestionDetails();
+      },
+      onError: () => {
+        setAlertType("Error");
+        setAlertMessage("Error while updating answer!");
+      },
+    });
+
+  const {
+    mutate: acceptAsBestAnswerMutate,
+    isPending: isLoadingAcceptAsBestAnswer,
+  } = useMutation({
+    mutationFn: (payload: { answerId: string; acceptAsBestAnswer: boolean }) =>
+      acceptAsBestAnswer(payload.answerId, payload.acceptAsBestAnswer),
+    onSuccess: () => {
+      setAlertType("Success");
+      setAlertMessage("Answer updated succesfully!");
+      refetchQuestionDetails();
+    },
+    onError: () => {
+      setAlertType("Error");
+      setAlertMessage("Error while updating answer!");
+    },
+  });
+
+  const { mutate: postCommentMutate, isPending: isLoadingPostComment } =
+    useMutation({
+      mutationFn: (payload: {
+        type: VoteType;
+        comment: string;
+        answerId?: string;
+      }) => postComment(payload.type, payload.comment, payload.answerId),
+      onSuccess: () => {
+        setAlertType("Success");
+        setAlertMessage("Comment posted succesfully!");
+        refetchQuestionDetails();
+      },
+      onError: () => {
+        setAlertType("Error");
+        setAlertMessage("Error while posting comment!");
+      },
     });
 
   const handleQuestion = (newValue: string) => {
@@ -62,13 +179,29 @@ const QuestionDetails = () => {
     setAnswer(newValue);
   };
 
-  const handlePostAnswer = () => {};
+  const handlePostAnswer = () => {
+    setAlertType("Warning");
+    if (!answer) {
+      setAlertMessage("Answer can't be empty!");
+    }
+    postAnswerMutate();
+  };
 
   const handleUpdateQuestion = () => {
+    setAlertType("Warning");
+    if (!myQuestion) {
+      setAlertMessage("Question can't be empty!");
+    }
+    updateQuestionMutate();
     setIsEditQuestionClicked((ps) => !ps);
   };
 
-  const handleUpdateAnswer = () => {
+  const handleUpdateAnswer = (answerId: string) => {
+    setAlertType("Warning");
+    if (!myAnswer) {
+      setAlertMessage("Answer an't be empty!");
+    }
+    updateAnswerMutate({ answerId });
     setIsEditAnswerClicked((ps) => !ps);
   };
 
@@ -79,8 +212,124 @@ const QuestionDetails = () => {
     return data;
   }
 
+  async function updateQuestion() {
+    const res = await customFetch(
+      `${Paths.UPDATE_QUESTION}/${userData?.data.userId}`,
+      { questionId, question: myQuestion },
+      "PUT"
+    );
+    return res;
+  }
+
+  async function updateAnswer(answerId: string) {
+    const res = await customFetch(
+      `${Paths.UPDATE_ANSWER}/${userData?.data.userId}`,
+      { answerId, answer: myAnswer },
+      "PUT"
+    );
+
+    return res;
+  }
+
+  async function acceptAsBestAnswer(
+    answerId: string,
+    acceptAsBestAnswer: boolean
+  ) {
+    const res = await customFetch(
+      `${Paths.ACCEP_AS_BEST_ANSWER}/${userData?.data.userId}`,
+      {
+        answerId,
+        acceptAsBestAnswer,
+      },
+      "PUT"
+    );
+    return res;
+  }
+
+  async function updateViews() {
+    const res = await customFetch(
+      `${Paths.UPDATE_VIEWS}/${userData?.data.userId}`,
+      {
+        questionId,
+        views: 1,
+      },
+      "PUT"
+    );
+
+    return res;
+  }
+
+  async function addVote(type: VoteType, vote: boolean, answerId?: string) {
+    const body: { vote?: boolean; questionId?: string; answerId?: string } = {};
+    if (type === VoteType.ANSWER) {
+      body.answerId = answerId;
+      body.vote = vote;
+    }
+    if (type === VoteType.QUESTION) {
+      body.questionId = questionId;
+      body.vote = vote;
+    }
+    const res = await customFetch(
+      `${Paths.ADD_VOTE}/${userData?.data.userId}`,
+      body,
+      "POST"
+    );
+    return res;
+  }
+
+  async function postAnswer() {
+    const res = await customFetch(
+      `${Paths.POST_ANSWER}/${userData?.data.userId}`,
+      {
+        questionId,
+        answer,
+      },
+      "POST"
+    );
+    return res;
+  }
+
+  async function postComment(
+    type: VoteType,
+    comment: string,
+    answerId?: string
+  ) {
+    const body: { comment?: string; questionId?: string; answerId?: string } =
+      {};
+    if (type === VoteType.ANSWER) {
+      body.answerId = answerId;
+      body.comment = comment;
+    }
+    if (type === VoteType.QUESTION) {
+      body.questionId = questionId;
+      body.comment = comment;
+    }
+    const res = await customFetch(
+      `${Paths.POST_COMMENT}/${userData?.data.userId}`,
+      body,
+      "POST"
+    );
+    return res;
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => updateViewsMutate(), 10000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
-    <Header isLoading={isQuestionDetailsLoading}>
+    <Header
+      isLoading={
+        isQuestionDetailsLoading ||
+        isLoadingUserData ||
+        isLoadingUpdateQuestion ||
+        isLoadingPostAnswer ||
+        isLoadongUpdateAnswer ||
+        isLoadingAcceptAsBestAnswer
+      }
+    >
       {!isQuestionDetailsLoading ? (
         <div className="w-full flex flex-col items-center justify-center gap-8">
           {/* Question Card */}
@@ -124,8 +373,12 @@ const QuestionDetails = () => {
                 ).reduce((prev, curr) => prev + curr, 0)}
                 positiveVoteContent="This question shows research effort; it is useful and clear"
                 negtiveVoteContent="This question does not show any research effort; it is unclear or not useful"
-                handlePositiveVote={() => {}}
-                handleNegativeVote={() => {}}
+                handlePositiveVote={() => {
+                  addVoteMutate({ type: VoteType.QUESTION, vote: true });
+                }}
+                handleNegativeVote={() => {
+                  addVoteMutate({ type: VoteType.QUESTION, vote: false });
+                }}
               />
             }
             content={
@@ -156,6 +409,18 @@ const QuestionDetails = () => {
                     value={myQuestion}
                   />
                 )}
+                <div className="w-full flex flex-row gap-1 flex-wrap">
+                  {questionDetails?.data.Tags.techTags.map(
+                    ({ technologyId, technology }) => (
+                      <Tag key={technologyId} content={technology} />
+                    )
+                  )}
+                  {questionDetails?.data.Tags.projectTags.map(
+                    ({ projectId, projectName }) => (
+                      <Tag key={projectId} content={projectName} />
+                    )
+                  )}
+                </div>
                 <div className="w-full flex items-center justify-between ">
                   <Comment
                     comments={
@@ -173,7 +438,12 @@ const QuestionDetails = () => {
                           )
                         : []
                     }
-                    onPostComment={() => {}}
+                    onPostComment={(commentValue: string) => {
+                      postCommentMutate({
+                        type: VoteType.QUESTION,
+                        comment: commentValue,
+                      });
+                    }}
                   />
                 </div>
               </div>
@@ -229,7 +499,7 @@ const QuestionDetails = () => {
                         <Tooltip content="Update question">
                           <Upload
                             className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-black"
-                            onClick={handleUpdateAnswer}
+                            onClick={() => handleUpdateAnswer(answerId)}
                           />
                         </Tooltip>
                       )
@@ -246,7 +516,12 @@ const QuestionDetails = () => {
                               "text-muted-foreground": !acceptedAsBest,
                             }
                           )}
-                          onClick={() => {}}
+                          onClick={() => {
+                            acceptAsBestAnswerMutate({
+                              answerId,
+                              acceptAsBestAnswer: !acceptedAsBest,
+                            });
+                          }}
                         />
                       </Tooltip>
                     ) : (
@@ -266,7 +541,7 @@ const QuestionDetails = () => {
                     <div className="w-full flex items-center justify-between  gap-4">
                       {!isEditAnswerClicked ? (
                         <div
-                          className="w-full basis-1"
+                          className="w-full "
                           dangerouslySetInnerHTML={{ __html: answer }}
                         ></div>
                       ) : (
@@ -274,7 +549,6 @@ const QuestionDetails = () => {
                           handleContent={handleMyAnswer}
                           placeholder="type here..."
                           value={myAnswer}
-                          className="basis-1"
                         />
                       )}
                       <div className="flex flex-col justify-center items-center gap-4">
@@ -285,8 +559,20 @@ const QuestionDetails = () => {
                           )}
                           positiveVoteContent="This answer shows research effort; it is useful and clear"
                           negtiveVoteContent="This answer does not show any research effort; it is unclear or not useful"
-                          handlePositiveVote={() => {}}
-                          handleNegativeVote={() => {}}
+                          handlePositiveVote={() => {
+                            addVoteMutate({
+                              type: VoteType.ANSWER,
+                              vote: true,
+                              answerId,
+                            });
+                          }}
+                          handleNegativeVote={() => {
+                            addVoteMutate({
+                              type: VoteType.ANSWER,
+                              vote: false,
+                              answerId,
+                            });
+                          }}
                         />
                         {acceptedAsBest && (
                           <Tooltip content="The question owner accepted this as the best answer">
@@ -308,7 +594,13 @@ const QuestionDetails = () => {
                             : "",
                         })
                       )}
-                      onPostComment={() => {}}
+                      onPostComment={(commentValue: string) => {
+                        postCommentMutate({
+                          type: VoteType.ANSWER,
+                          comment: commentValue,
+                          answerId,
+                        });
+                      }}
                     />
                   </div>
                 }
@@ -337,6 +629,15 @@ const QuestionDetails = () => {
               </div>
             }
           />
+          {alertMessage && (
+            <Alert
+              title={alertType}
+              type={alertType}
+              description={alertMessage}
+              variant="default"
+              setAlertMessage={setAlertMessage}
+            />
+          )}
         </div>
       ) : (
         <Skeleton className="max-w-5xl w-full h-[50vh]" />

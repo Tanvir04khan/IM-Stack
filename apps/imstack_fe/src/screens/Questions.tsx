@@ -14,6 +14,7 @@ import { QueryKeys } from "@/enum";
 import { useUser } from "@clerk/clerk-react";
 import { ResponseType, RQuestionsType } from "@/type";
 import ProfileCard from "@/components/ProfileCard";
+import Alert from "@/components/Alert";
 
 // const questions: {
 //   id: string;
@@ -110,9 +111,19 @@ const Questions = () => {
     hasAcceptedAsBestAnswer: boolean;
     answerCount: number;
     user: { userName: string; image: string };
+    askedOn: string;
   }[] = questionsData
     ? questionsData.data.map(
-        ({ title, questionId, views, Answers, Votes, Tags, Users }) => ({
+        ({
+          title,
+          questionId,
+          views,
+          Answers,
+          Votes,
+          Tags,
+          Users,
+          askedOn,
+        }) => ({
           id: questionId,
           title,
           activity: questionActivities.map(({ Icon, name, value }) => ({
@@ -142,6 +153,7 @@ const Questions = () => {
             userName: `${Users.firstName} ${Users.lastName}`,
             image: Users.image ? Users.imageType + "," + Users.image : "",
           },
+          askedOn,
         })
       )
     : [];
@@ -167,62 +179,76 @@ const Questions = () => {
             <FilePlus className="w-4 h-4" />
           </Button>
         </div>
-        <h1 className="text-xs text-muted-foreground">800 Questions</h1>
+        <h1 className="text-xs text-muted-foreground">
+          {questions.length} Questions
+        </h1>
         <div className="w-full flex flex-col gap-4">
-          {questions.map(
-            ({
-              title,
-              activity,
-              relatedTo,
-              id,
-              hasAcceptedAsBestAnswer,
-              answerCount,
-              user,
-            }) => (
-              <Card
-                key={title}
-                className="hover:shadow-lg duration-100 cursor-pointer"
-                title={
-                  <div className="flex items-center gap-4">
-                    <QuestionActivity
-                      questionActivities={activity.filter(
-                        ({ name }) => name !== "Answers"
-                      )}
-                      className="flex flex-row gap-4 text-muted-foreground"
-                    />
-                    <Tag
-                      content={`${answerCount} Answers`}
-                      className={
-                        hasAcceptedAsBestAnswer
-                          ? "bg-[#18864b] text-[#fff] border-[1px] border-[#18864b]"
-                          : "bg-[#fff] text-[#18864b] border-[1px] border-[#18864b]"
-                      }
-                      // className="bg-[#18864b] text-[#fff] border-[1px] border-[#18864b]"
-                    />
-                  </div>
-                }
-                content={
-                  <div className="w-full flex flex-col gap-4">
-                    <div className="font-semibold text-lg">{title}</div>
-                    <div className="w-full flex flex-row gap-1">
-                      {relatedTo.map(({ tagId, tag }) => (
-                        <Tag key={tagId} content={tag} />
-                      ))}
-                    </div>
-
-                    <div>
-                      <ProfileCard
-                        ProjectName={user.userName}
-                        imageSrc={user.image}
+          {questions.length ? (
+            questions.map(
+              ({
+                title,
+                activity,
+                relatedTo,
+                id,
+                hasAcceptedAsBestAnswer,
+                answerCount,
+                user,
+                askedOn,
+              }) => (
+                <Card
+                  key={title}
+                  className="hover:shadow-lg duration-100 cursor-pointer"
+                  title={
+                    <div className="flex items-center gap-4">
+                      <QuestionActivity
+                        questionActivities={activity.filter(
+                          ({ name }) => name !== "Answers"
+                        )}
+                        className="flex flex-row gap-4 text-muted-foreground"
+                      />
+                      <Tag
+                        content={`${answerCount} Answers`}
+                        className={
+                          hasAcceptedAsBestAnswer
+                            ? "bg-[#18864b] text-[#fff] border-[1px] border-[#18864b]"
+                            : "bg-[#fff] text-[#18864b] border-[1px] border-[#18864b]"
+                        }
+                        // className="bg-[#18864b] text-[#fff] border-[1px] border-[#18864b]"
                       />
                     </div>
-                  </div>
-                }
-                onClick={() =>
-                  navigation({ from: "/questions", to: `/questions/${id}` })
-                }
-              />
+                  }
+                  content={
+                    <div className="w-full flex flex-col gap-4">
+                      <div className="font-semibold text-lg">{title}</div>
+                      <div className="w-full flex flex-row gap-1 flex-wrap">
+                        {relatedTo.map(({ tagId, tag }) => (
+                          <Tag key={tagId} content={tag} />
+                        ))}
+                      </div>
+
+                      <div>
+                        <ProfileCard
+                          ProjectName={user.userName}
+                          imageSrc={user.image}
+                        />
+                      </div>
+                    </div>
+                  }
+                  onClick={() =>
+                    navigation({ from: "/questions", to: `/questions/${id}` })
+                  }
+                  action={
+                    <div className="w-max-content text-muted-foreground">
+                      {askedOn.split("T")[0]}
+                    </div>
+                  }
+                />
+              )
             )
+          ) : (
+            <div className="w-full max-w-5xl text-muted-foreground">
+              No data found.
+            </div>
           )}
         </div>
       </div>

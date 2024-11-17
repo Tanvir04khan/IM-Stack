@@ -79,7 +79,7 @@ const getQuestionDetails = async (
         projectTags: questionDetails.Tags?.filter((tag) => tag.Projects)?.map(
           ({ Projects }) => ({
             projectId: Projects?.projectId,
-            ProjectsName: Projects?.projectName,
+            projectName: Projects?.projectName,
           })
         ),
       },
