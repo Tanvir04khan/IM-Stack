@@ -27,7 +27,11 @@ const getUserDetails = async (
     const user = await database.query.Users.findFirst({
       where: (Users, { inArray }) => inArray(Users.userId, [userId]),
       with: {
-        Rewards: true,
+        Rewards: {
+          columns: {
+            score: true,
+          },
+        },
         UserTechnologies: {
           columns: { userTechId: true },
           with: {
@@ -52,7 +56,6 @@ const getUserDetails = async (
         },
       },
     });
-
     if (!user) {
       throw new NodeError(
         ErrorMessage.ACTIVITIES_USER,
@@ -61,10 +64,25 @@ const getUserDetails = async (
       );
     }
 
+    const data = {
+      ...user,
+      UsersRoles: user.UsersRoles.map(({ Projects, Roles, usersRoleId }) => ({
+        usersRoleId,
+        Roles,
+        Projects: {
+          ...Projects,
+          icon: Projects?.iconType + "," + Projects?.icon.toString("base64"),
+        },
+      })),
+      image: user.imageType
+        ? user.imageType + "," + user.image?.toString("base64")
+        : "",
+    };
+
     res.status(APIStatusCode.OK).json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.GET_USER_DETAILS,
-      data: user,
+      data: data,
     });
   } catch (error) {
     next(error);

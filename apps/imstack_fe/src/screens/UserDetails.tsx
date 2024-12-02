@@ -10,24 +10,37 @@ import { Edit } from "lucide-react";
 import imstack from "../images/authpageimage.png";
 import { Toggle } from "@/components/ui/toggle";
 import Switch from "@/components/Switch";
+import { useQuery } from "@tanstack/react-query";
+import { QueryKeys } from "@/enum";
+import { getProjectTags, getTechnologies } from "@/utilts";
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [projects, setProjects] = useState<string[]>([]);
-  const [tech, setTech] = useState<string[]>([]);
+  const [projects, setProjects] = useState<{ id: string; value: string }[]>([]);
+  const [tech, setTech] = useState<{ id: string; value: string }[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const { userId } = useParams({ strict: false });
 
-  console.log(userId);
+  const { data: technologies, isFetching: isTechnologiesLoading } = useQuery({
+    queryKey: [QueryKeys.GET_TECHNOLOGIES],
+    queryFn: getTechnologies,
+    staleTime: 1000 * 5 * 60,
+  });
+
+  const { data: projectTags, isFetching: isLoadingProjectTags } = useQuery({
+    queryKey: [QueryKeys.GET_PROJECT_TAGS],
+    queryFn: getProjectTags,
+    staleTime: 1000 * 5 * 60,
+  });
 
   const handleIsAdminToggleButton = () => {
     setIsAdmin((ps) => !ps);
   };
 
   return (
-    <Header>
+    <Header isLoading={false}>
       <Card
         title="User Details"
         content={
@@ -68,25 +81,41 @@ const UserDetails = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <MultiSelectDropdown
+              {/* <MultiSelectDropdown
                 label="Projects Write Access"
-                options={["IM Stack", "X4A", "X4C", "X4V", "X4S"]}
+                options={
+                  projectTags
+                    ? projectTags.data.map(({ projectId, projectName }) => ({
+                        id: projectId,
+                        value: projectName,
+                      }))
+                    : []
+                }
                 placeholder="Projects..."
-                value={projects}
+                values={projects}
                 onSelect={setProjects}
-              />
+              /> */}
               <MultiSelectDropdown
                 label="Technologies"
-                options={["React JS", "JS", "Dot Net", "Flutter", "Vue JS"]}
+                options={
+                  technologies
+                    ? technologies?.data.map(
+                        ({ technologyId, technology }) => ({
+                          id: technologyId,
+                          value: technology,
+                        })
+                      )
+                    : []
+                }
                 placeholder="Technologis..."
-                value={tech}
+                values={tech}
                 onSelect={setTech}
               />
-              <Switch
+              {/* <Switch
                 lable="Is Admin"
                 value={isAdmin}
                 onChange={handleIsAdminToggleButton}
-              />
+              /> */}
             </div>
             <Button className="max-w-24" content="Update" onClick={() => {}}>
               <Edit className="w-4 h-4" />

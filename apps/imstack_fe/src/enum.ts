@@ -52,6 +52,9 @@ export enum QueryKeys {
   ACCEP_AS_BEST_ANSWER = "acceptAsBestAnswer",
   POST_COMMENT = "postComment",
   ADD_USER = "addUser",
+  GET_USER_DETAILS = "getUserDetails",
+  GET_COMMENTS = "getComments",
+  GET_TOP_FIVE_USERS = "getTopFiveUsers",
 }
 
 export enum Paths {
@@ -75,4 +78,7 @@ export enum Paths {
   ACCEP_AS_BEST_ANSWER = "/acceptasbest-answer",
   POST_COMMENT = "/add-comment",
   ADD_USER = "/add-user",
+  GET_USER_DETAILS = "/get-userdetails",
+  GET_COMMENTS = "/get-comments",
+  GET_TOP_FIVE_USERS = "/get-top-five-users",
 }

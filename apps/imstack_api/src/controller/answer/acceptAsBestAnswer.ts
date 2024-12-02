@@ -1,4 +1,4 @@
-import { Answers, Users, Votes } from "./../../database/schema";
+import { Answers, Rewards, Users, Votes } from "./../../database/schema";
 import { NextFunction, Request, Response } from "express";
 import NodeError from "../../utils/NodeError";
 import {
@@ -6,10 +6,11 @@ import {
   ErrorCode,
   ErrorMessage,
   ResponseStatus,
+  Score,
   SuccesMessage,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 const acceptAsBestAnswer = async (
   req: Request,
@@ -54,6 +55,13 @@ const acceptAsBestAnswer = async (
         ErrorCode.INVALID_REQUEST
       );
     }
+
+    await database
+      .update(Rewards)
+      .set({
+        score: sql`${Rewards.score} + ${Score.ACCEPTED_AS_BEST_ANSWER}`,
+      })
+      .where(eq(Rewards.userId, result[0].userId));
 
     res.json({
       status: ResponseStatus.SUCCESS,

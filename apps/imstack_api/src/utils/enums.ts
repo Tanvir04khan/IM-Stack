@@ -65,6 +65,7 @@ export enum SuccesMessage {
   POST_ANSWER = "Answer posted successfully.",
   UPDATE_ANSWER = "Answer updated successfully.",
   ADD_COMMENT = "Comment added successfully.",
+  GET_COMMENTS = "Comments found.",
   DELETE_COMMENT = "Comment deleted successfully.",
   ADD_USER = "User added successfully.",
   GET_USERS = "Users found.",

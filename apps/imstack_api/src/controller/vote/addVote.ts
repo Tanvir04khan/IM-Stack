@@ -1,4 +1,4 @@
-import { Users, Votes } from "./../../database/schema";
+import { Rewards, Users, Votes } from "./../../database/schema";
 import { NextFunction, Request, Response } from "express";
 import NodeError from "../../utils/NodeError";
 import {
@@ -7,11 +7,12 @@ import {
   ErrorCode,
   ErrorMessage,
   ResponseStatus,
+  Score,
   SuccesMessage,
   VoteValue,
 } from "../../utils/enums";
 import { database } from "../../database/connection";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 const addVote = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
@@ -69,7 +70,11 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
           vote: vote ? VoteValue.POSITIVE : VoteValue.NEGATIVE,
         })
         .where(eq(Votes.voteId, userVote.voteId))
-        .returning({ voteId: Votes.voteId });
+        .returning({
+          voteId: Votes.voteId,
+          vote: Votes.vote,
+          userId: Votes.userId,
+        });
     } else {
       result = await database
         .insert(Votes)
@@ -80,7 +85,11 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
           questionId: voteType === CommentType.QUESTION ? questionId : null,
           vote: vote ? VoteValue.POSITIVE : VoteValue.NEGATIVE,
         })
-        .returning({ voteId: Votes.voteId });
+        .returning({
+          voteId: Votes.voteId,
+          vote: Votes.vote,
+          userId: Votes.userId,
+        });
     }
     if (!result || !result.length) {
       throw new NodeError(
@@ -88,6 +97,31 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
         APIStatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.SERVER_ERROR
       );
+    }
+
+    if (result && result.length && result[0].vote && result[0].vote >= 100) {
+      await database
+        .update(Rewards)
+        .set({
+          score: sql`${Rewards.score} + ${Score.LIKES}`,
+        })
+        .where(eq(Rewards.userId, result[0].userId));
+    }
+    if (result && result.length && result[0].vote && result[0].vote >= 500) {
+      await database
+        .update(Rewards)
+        .set({
+          score: sql`${Rewards.score} + ${Score.LIKES}`,
+        })
+        .where(eq(Rewards.userId, result[0].userId));
+    }
+    if (result && result.length && result[0].vote && result[0].vote >= 500) {
+      await database
+        .update(Rewards)
+        .set({
+          score: sql`${Rewards.score} + ${Score.LIKES}`,
+        })
+        .where(eq(Rewards.userId, result[0].userId));
     }
     console.log(result[0].voteId, "voteId........................");
     res.json({

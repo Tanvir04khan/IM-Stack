@@ -175,7 +175,14 @@ export const usersRelations = relations(Users, ({ one, many }) => ({
   UserTechnologies: many(UserTechnologies),
   Rewards: one(Rewards, {
     fields: [Users.userId],
-    references: [Rewards.rewardId],
+    references: [Rewards.userId],
+  }),
+}));
+
+export const RewardRelations = relations(Rewards, ({ one }) => ({
+  Users: one(Users, {
+    fields: [Rewards.userId],
+    references: [Users.userId],
   }),
 }));
 

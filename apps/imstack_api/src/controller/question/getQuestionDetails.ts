@@ -35,8 +35,8 @@ const getQuestionDetails = async (
         Answers: {
           with: {
             Comments: {
-              with: {
-                User: true,
+              columns: {
+                commentId: true,
               },
             },
             Votes: true,
@@ -51,8 +51,8 @@ const getQuestionDetails = async (
           },
         },
         Comments: {
-          with: {
-            User: true,
+          columns: {
+            commentId: true,
           },
         },
         Votes: true,

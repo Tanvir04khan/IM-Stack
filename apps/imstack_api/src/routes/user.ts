@@ -4,6 +4,7 @@ import getUserDetails from "../controller/user/getUserDetails";
 import updateUserDetails from "../controller/user/updateUserDetails";
 import addUser from "../controller/user/addUser";
 import getUser from "../controller/user/getUser";
+import getTopFiveUsers from "../controller/user/getTopFiveUsers";
 
 const userRouter = Router();
 
@@ -14,6 +15,8 @@ userRouter.get("/get-user/:clerkUserId", getUser as RequestHandler);
 userRouter.get("/get-users/:userId", getUsers as RequestHandler);
 
 userRouter.get("/get-userdetails/:userId", getUserDetails as RequestHandler);
+
+userRouter.get("/get-top-five-users", getTopFiveUsers as RequestHandler);
 
 userRouter.put("/update-userdetails", updateUserDetails as RequestHandler);
 

@@ -149,24 +149,6 @@ const QuestionDetails = () => {
     },
   });
 
-  const { mutate: postCommentMutate, isPending: isLoadingPostComment } =
-    useMutation({
-      mutationFn: (payload: {
-        type: VoteType;
-        comment: string;
-        answerId?: string;
-      }) => postComment(payload.type, payload.comment, payload.answerId),
-      onSuccess: () => {
-        setAlertType("Success");
-        setAlertMessage("Comment posted succesfully!");
-        refetchQuestionDetails();
-      },
-      onError: () => {
-        setAlertType("Error");
-        setAlertMessage("Error while posting comment!");
-      },
-    });
-
   const handleQuestion = (newValue: string) => {
     setMyQuestion(newValue);
   };
@@ -423,27 +405,12 @@ const QuestionDetails = () => {
                 </div>
                 <div className="w-full flex items-center justify-between ">
                   <Comment
-                    comments={
+                    commentCount={
                       questionDetails
-                        ? questionDetails?.data.Comments.map(
-                            ({ comment, User, commentedOn, commentId }) => ({
-                              comment,
-                              commentedOn: commentedOn.split("T")[0],
-                              userName: `${User.firstName} ${User.lastName}`,
-                              imageSrc: User.image
-                                ? User.imageType + "," + User.image
-                                : "",
-                              commentId,
-                            })
-                          )
-                        : []
+                        ? questionDetails?.data.Comments.length
+                        : 0
                     }
-                    onPostComment={(commentValue: string) => {
-                      postCommentMutate({
-                        type: VoteType.QUESTION,
-                        comment: commentValue,
-                      });
-                    }}
+                    questionId={questionId}
                   />
                 </div>
               </div>
@@ -583,24 +550,8 @@ const QuestionDetails = () => {
                     </div>
 
                     <Comment
-                      comments={Comments.map(
-                        ({ comment, commentId, commentedOn, User }) => ({
-                          comment,
-                          commentId,
-                          commentedOn: commentedOn.split("T")[0],
-                          userName: `${User.firstName} ${User.lastName}`,
-                          imageSrc: User.image
-                            ? User.imageType + "," + User.image
-                            : "",
-                        })
-                      )}
-                      onPostComment={(commentValue: string) => {
-                        postCommentMutate({
-                          type: VoteType.ANSWER,
-                          comment: commentValue,
-                          answerId,
-                        });
-                      }}
+                      commentCount={Comments.length}
+                      answerId={answerId}
                     />
                   </div>
                 }

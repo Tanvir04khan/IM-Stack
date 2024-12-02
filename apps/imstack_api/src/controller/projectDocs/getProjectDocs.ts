@@ -19,7 +19,7 @@ const getProjectDocs = async (
 ) => {
   const { userId } = req.params;
   const { limit } = req.query;
-  console.log(userId, "prodocs.................");
+
   try {
     if (!userId) {
       throw new NodeError(

@@ -99,7 +99,7 @@ export type AnswerType = {
   userId: string;
   questionId: string;
   acceptedAsBest: boolean;
-  Comments: CommentsType[];
+  Comments: { commentId: string }[];
   Votes: VotesType[];
   Users: RUsersType;
 };
@@ -219,6 +219,67 @@ export type RQuestionDetails = {
     techTags: { technologyId: string; technology: string }[];
     projectTags: { projectId: string; projectName: string }[];
   };
-  Comments: CommentsType[];
+  Comments: { commentId: string }[];
   Votes: VotesType[];
+};
+
+export type RUserDetails = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  image: string;
+  clerkUserID: string;
+  imageType: string;
+  joinedOn: string;
+  Rewards: {
+    score: number;
+  };
+  UserTechnologies: {
+    userTechId: string;
+    Technologies: { technologyId: string; technology: string };
+  }[];
+  UsersRoles: {
+    userRoleId: string;
+    Roles: {
+      roleId: string;
+      role: string;
+    };
+    Projects: {
+      projectId: string;
+      projectName: string;
+      createdBy: string;
+      createdOn: string;
+      icon: string;
+      iconType: string;
+    };
+  }[];
+};
+
+export type RCommentsType = {
+  commentId: string;
+  comment: string;
+  commentedOn: string;
+  userId: string;
+  type: string;
+  questionId: string;
+  answerId: string;
+  User: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    image: string;
+    imageType: string;
+  };
+};
+
+export type RLeaderBoardType = {
+  score: number;
+  Users: {
+    firstName: string;
+    lastName: string;
+    image: string;
+    imageType: string;
+    userId: string;
+  };
 };

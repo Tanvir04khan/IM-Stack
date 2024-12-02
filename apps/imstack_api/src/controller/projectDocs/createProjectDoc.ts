@@ -62,7 +62,7 @@ const createProjectDoc = async (
     const projectIconArray = projectIcon.split(",");
 
     const icon = Buffer.from(projectIconArray[1], "base64");
-    console.log("create...............1");
+
     const result = await database
       .insert(Projects)
       .values({
@@ -75,17 +75,17 @@ const createProjectDoc = async (
         modifiedBy: userId,
       })
       .returning();
-    console.log("create...............2");
+
     const writeRole = await database.query.Roles.findFirst({
       where: (Roles, { inArray }) => inArray(Roles.role, [uRoles.WRITE]),
     });
-    console.log("create...............3");
+
     await database.insert(UsersRoles).values({
       roleId: writeRole ? writeRole.roleId : "",
       userId,
       projectId: result[0].projectId,
     });
-    console.log("create...............4");
+
     const tagsToBeAdded = [];
 
     for (const tag of tags) {
@@ -96,9 +96,9 @@ const createProjectDoc = async (
         technologyId: tag.id,
       });
     }
-    console.log("create...............5");
+
     await database.insert(Tags).values(tagsToBeAdded);
-    console.log("create...............6");
+
     if (!result.length) {
       throw new NodeError(
         ErrorMessage.SOMETHING_WENT_WRONG,
@@ -106,14 +106,14 @@ const createProjectDoc = async (
         ErrorCode.SERVER_ERROR
       );
     }
-    console.log("create...............7");
+
     await database
       .update(Rewards)
       .set({
         score: sql`${Rewards.score} + ${Score.CREATE_PROJECT}`,
       })
       .where(eq(Rewards.userId, userId));
-    console.log("create...............8");
+
     return res.json({
       status: ResponseStatus.SUCCESS,
       message: SuccesMessage.PROJECT_DOCS_CREATE,
